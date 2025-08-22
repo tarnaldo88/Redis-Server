@@ -8,4 +8,5 @@ Redis Server built from scratch
 4. Data Structures - Hash tables, vectors
 5. Parsing & RESP protocol
 6. File I/O presitance
-7. 
+7. Signal Handling
+8. Command Processing & Response formatting
