@@ -10,3 +10,6 @@ Redis Server built from scratch
 6. File I/O presitance
 7. Signal Handling
 8. Command Processing & Response formatting
+9. Singleton Pattern
+10. Bitwise Operators'|='
+11. std::
