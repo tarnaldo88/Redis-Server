@@ -1,4 +1,4 @@
-##Common Commands
+###Common Commands
 *PING*
 Use case: Before embarking on any data operations, an application can send a PING to ensure that the Redis server is alive and responsive—like knocking on a door before entering.
 
