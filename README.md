@@ -14,7 +14,7 @@ Redis Server built from scratch
 10. Bitwise Operators'|='
 11. std:: libraries
 
-#Classes to be implemented
+#  Classes to be implemented
 RedisServer class
 
 RedisDatabase class

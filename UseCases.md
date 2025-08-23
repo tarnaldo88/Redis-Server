@@ -1,4 +1,4 @@
-#Common Commands
+## Common Commands
 *PING*
 Use case: Before embarking on any data operations, an application can send a PING to ensure that the Redis server is alive and responsive—like knocking on a door before entering.
 
@@ -8,7 +8,7 @@ Use case: A debugging tool or simple utility to test network connectivity by hav
 *FLUSHALL*
 Use case: When resetting a cache or starting fresh, FLUSHALL clears all stored keys. This is useful during development or when you need to wipe out stale data completely.
 
-#Key/Value Operations
+## Key/Value Operations
 SET
 Use case: Caching user session information or configuration settings. For example, store a user token with SET session:123 "user_data".
 
