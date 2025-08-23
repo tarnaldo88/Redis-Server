@@ -12,4 +12,11 @@ Redis Server built from scratch
 8. Command Processing & Response formatting
 9. Singleton Pattern
 10. Bitwise Operators'|='
-11. std::
+11. std:: libraries
+
+#Classes to be implemented
+RedisServer class
+
+RedisDatabase class
+
+RedisCommandHandler class
