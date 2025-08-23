@@ -85,5 +85,5 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
 
     //check commands
 
-    return response;
+    return response.str();
 }
