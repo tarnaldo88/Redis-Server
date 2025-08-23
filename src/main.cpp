@@ -8,5 +8,7 @@ int main(int argc, char* argv[]) {
 
     RedisServer server(port);
 
+    server.run();
+
     return 0;
 }
