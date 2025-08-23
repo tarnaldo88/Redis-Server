@@ -1,5 +1,6 @@
 #include "./include/RedisCommandHandler.h"
 
+
 //RESP parser:
 //2*\r\n$4\r\n\PING\r\n$4\r\n$4\r\nTEST\r\n
 //2* -> array has 2  elements
@@ -65,4 +66,24 @@ std::vector<std::string> parseRespCommand(const std::string &input){
         pos += len + 2; //skip token & crlf
     }
     return tokens;
+}
+
+RedisCommandHandler::RedisCommandHandler() {}
+
+std::string RedisCommandHandler::processCommand(const std::string& commandLine){
+    //Using RESP parser;
+    std::vector<std::string> tokens = parseRespCommand(commandLine);
+
+    if(tokens.empty()) 
+        return "-error: empty command\r\n";
+
+    std::string cmd = tokens[0];
+    std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::toupper);
+    std::ostringstream response;
+
+    //connect to database
+
+    //check commands
+
+    return response;
 }
