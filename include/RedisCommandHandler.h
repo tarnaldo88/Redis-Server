@@ -2,6 +2,8 @@
 #define REDIS_COMMAND_HANDLER_H
 
 #include <string>
+#include <vector>
+#include <sstream>
 
 class RedisCommandHandler {
 public:
