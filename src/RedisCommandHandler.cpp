@@ -43,10 +43,26 @@ std::vector<std::string> parseRespCommand(const std::string &input){
     int numElements = std::stoi(input.substr(pos, crlf - pos));
     pos = crlf + 2;
 
-    for(int i = 0; i< numElements; i++ ){
+    for(int i = 0; i < numElements; i++ ){
         if ( pos>=input.size() || input[pos] != '$'){
             break; //format error
         }
-    }
+        pos++; //skip $
 
+        crlf = input.find("\r\n", pos);
+
+        if(crlf == std::string::npos) break;
+
+        int len = std::stoi(input.substr(pos, crlf - pos));
+        pos = crlf + 2;
+
+        if(pos + len > input.size()){
+            break; //out of inputs
+        }
+
+        std::string token = input.substr(pos,len);
+        tokens.push_back(token);
+        pos += len + 2; //skip token & crlf
+    }
+    return tokens;
 }
