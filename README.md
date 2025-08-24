@@ -15,8 +15,8 @@ Redis Server built from scratch
 11. std:: libraries
 
 #  Classes to be implemented
-RedisServer class
+**RedisServer class
 
-RedisDatabase class
+**RedisDatabase class
 
-RedisCommandHandler class
+**RedisCommandHandler class
