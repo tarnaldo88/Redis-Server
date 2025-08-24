@@ -76,7 +76,9 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
 
     if(tokens.empty()) {
         return "-error: empty command\r\n";
-    }        
+    } 
+    
+    std::cout << commandLine<< "\n";
 
     for(auto& t : tokens){
         std::cout << t << "\n";
