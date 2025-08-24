@@ -5,6 +5,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <iostream>
 
 class RedisCommandHandler {
 public:
