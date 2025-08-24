@@ -13,6 +13,18 @@ RedisServer:: RedisServer(int port) : port(port), server_socket(-1), running(tru
     globalServer = this;
 }
 
+void RedisServer::shutdown()
+{
+    running = false;
+
+    if (server_socket != INVALID_SOCK) {
+        close(server_socket);
+        server_socket = INVALID_SOCK;
+    }
+
+    std::cout << "Server Shutdown Complete" << "\n";
+}
+
 void RedisServer::run()
 {
     server_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -22,7 +34,7 @@ void RedisServer::run()
         return;
     }
 
-    // Best-effort: set close-on-exec
+    // // Best-effort: set close-on-exec
     int fdflags = fcntl(server_socket, F_GETFD);
     if (fdflags != -1) {
         if (fcntl(server_socket, F_SETFD, fdflags | FD_CLOEXEC) == -1) {
@@ -56,7 +68,7 @@ void RedisServer::run()
         return;
     }
 
-    // Non-blocking accept loop setup
+    // // Non-blocking accept loop setup
     int nbflags = fcntl(server_socket, F_GETFL);
     if (nbflags != -1) {
         if (fcntl(server_socket, F_SETFL, nbflags | O_NONBLOCK) == -1) {
@@ -75,11 +87,23 @@ void RedisServer::run()
     while(running){
         int client_socket = accept(server_socket, nullptr, nullptr);
 
-        if(client_socket < 0) {
-            if(running){
-                std::cerr << "Error Accepting Client Connection. \n";
-                break;
+        if (client_socket < 0) {
+            if (!running) break;
+            // Non-blocking accept: handle transient errors gracefully
+            if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR) {
+                struct pollfd pfd;
+                pfd.fd = server_socket;
+                pfd.events = POLLIN;
+                pfd.revents = 0;
+                (void)poll(&pfd, 1, 250); // wait a bit for next event
+                continue;
             }
+            if (errno == EMFILE || errno == ENFILE) {
+                std::cerr << "accept() failed: FD limit reached: " << std::strerror(errno) << "\n";
+                continue;
+            }
+            std::cerr << "accept() failed: " << std::strerror(errno) << "\n";
+            continue;
         }
 
         threads.emplace_back([client_socket, &cmdHandler](){
@@ -97,7 +121,22 @@ void RedisServer::run()
         });
     }
 
-    // Simple accept loop
+    
+
+    for(auto& t : threads){
+        if(t.joinable()) t.join();
+    }
+
+    // Shutdown & Cleanup
+    // shutdown();
+
+    if (server_socket != INVALID_SOCK) {
+        close(server_socket);
+        server_socket = INVALID_SOCK;
+    }
+}
+
+// Simple accept loop
     // while (running) {
     //     struct pollfd pfd;
     //     pfd.fd = server_socket;
@@ -146,28 +185,3 @@ void RedisServer::run()
     //         close(client_fd);
     //     }
     // }
-
-    for(auto& t : threads){
-        if(t.joinable()) t.join();
-    }
-
-    // Shutdown & Cleanup
-    shutdown();
-
-    // if (server_socket != INVALID_SOCK) {
-    //     close(server_socket);
-    //     server_socket = INVALID_SOCK;
-    // }
-}
-
-void RedisServer::shutdown()
-{
-    running = false;
-
-    if (server_socket != INVALID_SOCK) {
-        close(server_socket);
-        server_socket = INVALID_SOCK;
-    }
-
-    std::cout << "Server Shutdown Complete" << "\n";
-}
