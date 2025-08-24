@@ -1,5 +1,5 @@
-#include "./include/main.h"
-#include "./include/RedisServer.h"
+#include "main.h"
+#include "RedisServer.h"
 
 int main(int argc, char* argv[]) {
     //default port for now

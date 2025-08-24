@@ -1,5 +1,5 @@
-#include "./include/RedisServer.h"
-#include "./include/RedisCommandHandler.h"
+#include "RedisServer.h"
+#include "RedisCommandHandler.h"
 #include <cerrno>
 #include <cstring>
 #include <fcntl.h>
