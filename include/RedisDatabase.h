@@ -6,6 +6,7 @@
 #include <mutex>
 #include <fstream>
 #include <unordered_map>
+#include <sstream>
 
 class RedisDatabase {
 public:
