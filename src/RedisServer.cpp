@@ -157,7 +157,7 @@ void RedisServer::run()
     }
 }
 
-// Simple accept loop
+// accept loop with some error handling
     // while (running) {
     //     struct pollfd pfd;
     //     pfd.fd = server_socket;

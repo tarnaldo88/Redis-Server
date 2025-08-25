@@ -1,4 +1,4 @@
-build/RedisCommandHandler.o: src/RedisCommandHandler.cpp \
+build/RedisDatabase.o: src/RedisDatabase.cpp \
  include/RedisCommandHandler.h include/RedisDatabase.h
 include/RedisCommandHandler.h:
 include/RedisDatabase.h:
