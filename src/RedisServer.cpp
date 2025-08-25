@@ -9,6 +9,34 @@
 
 static RedisServer* globalServer = nullptr;
 
+// Return the length in bytes of a complete RESP command at the start of buf.
+// If incomplete or invalid, return 0 to indicate more data is needed.
+static size_t respMessageLength(const std::string& buf) {
+    if (buf.empty() || buf[0] != '*') return 0;
+    size_t pos = 1;
+    size_t crlf = buf.find("\r\n", pos);
+    if (crlf == std::string::npos) return 0;
+    int numElements = 0;
+    try {
+        numElements = std::stoi(buf.substr(pos, crlf - pos));
+    } catch (...) { return 0; }
+    pos = crlf + 2;
+    for (int i = 0; i < numElements; ++i) {
+        if (pos >= buf.size() || buf[pos] != '$') return 0;
+        ++pos;
+        crlf = buf.find("\r\n", pos);
+        if (crlf == std::string::npos) return 0;
+        int len = 0;
+        try {
+            len = std::stoi(buf.substr(pos, crlf - pos));
+        } catch (...) { return 0; }
+        pos = crlf + 2;
+        if (pos + len + 2 > buf.size()) return 0; // need full bulk + CRLF
+        pos += len + 2; // skip data + CRLF
+    }
+    return pos;
+}
+
 void signalHandler(int signum){
     if(globalServer){
         std::cout << "Caught signal " << signum << ", shutting down.\n";
@@ -122,15 +150,31 @@ void RedisServer::run()
         }
 
         threads.emplace_back([client_socket, &cmdHandler](){
+            std::string inbuf;
             char buffer[1024];
-            while(true){
-                memset(buffer, 0, sizeof(buffer));
-                int bytes = recv(client_socket, buffer, sizeof(buffer) - 1, 0);
-                if(bytes < 0) break;
+            while (true) {
+                int bytes = recv(client_socket, buffer, sizeof(buffer), 0);
+                if (bytes <= 0) break; // connection closed or error
+                inbuf.append(buffer, buffer + bytes);
 
-                std:: string request(buffer,bytes);
-                std::string response = cmdHandler.processCommand(request);
-                send(client_socket, response.c_str(), response.size(), 0);                
+                // Try to process as many complete commands as available
+                while (true) {
+                    if (inbuf.empty()) break;
+                    size_t consume = 0;
+                    if (inbuf[0] == '*') {
+                        consume = respMessageLength(inbuf);
+                        if (consume == 0) break; // need more data
+                    } else {
+                        size_t nl = inbuf.find('\n');
+                        if (nl == std::string::npos) break; // wait for full line
+                        consume = nl + 1;
+                    }
+
+                    std::string request = inbuf.substr(0, consume);
+                    std::string response = cmdHandler.processCommand(request);
+                    (void)send(client_socket, response.c_str(), response.size(), 0);
+                    inbuf.erase(0, consume);
+                }
             }
             close(client_socket);
         });

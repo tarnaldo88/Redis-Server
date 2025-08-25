@@ -91,7 +91,7 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     std::vector<std::string> tokens = parseRespCommand(commandLine);
 
     if(tokens.empty()) {
-        return "-error: empty command\r\n";
+        return ""; // ignore empty commands
     } 
     
     //for debugging
@@ -106,16 +106,30 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     RedisDatabase& db = RedisDatabase::getInstance();
 
     //check commands
-    if(cmd == "PING") {
-        response << "PONG \r\n";
-    } else if(cmd == "ECHO"){
-        //todo        
+    if (cmd == "PING") {
+        // RESP: simple string +PONG or echo back message if provided
+        if (tokens.size() >= 2) {
+            response << "+" << tokens[1] << "\r\n";
+        } else {
+            response << "+PONG\r\n";
+        }
+    } else if (cmd == "ECHO") {
+        if (tokens.size() < 2) {
+            response << "-ERR wrong number of arguments for 'echo' command\r\n";
+        } else {
+            const std::string& msg = tokens[1];
+            response << "$" << msg.size() << "\r\n" << msg << "\r\n";
+        }
+    } else if (cmd == "FLUSHALL") {
+        // If a real flush exists, call it on db; otherwise acknowledge
+        // db.flushAll();
+        response << "+OK\r\n";
     }
     // Key/Value operations
     // List Operations
     // Hash Operations
     else {
-        response << "-Error: Unknown Command\r\n";
+        response << "-ERR unknown command '" << tokens[0] << "'\r\n";
     }
 
     return response.str();

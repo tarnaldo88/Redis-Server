@@ -13,10 +13,6 @@ public:
 
     //process command from client and return RESP-formatted response.
     std::string processCommand(const std::string& commandLine);
-private:
-    static std::string handlePing(const std::vector<std::string>& /*tokens*/, RedisDatabase& /*db*/);
-    static std::string handleEcho(const std::vector<std::string>& tokens, RedisDatabase& /*db*/);
-    static std::string handleFlushAll(const std::vector<std::string>& /*tokens*/, RedisDatabase& db);
 };
 
 #endif
