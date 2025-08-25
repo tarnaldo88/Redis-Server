@@ -17,6 +17,18 @@ public:
     bool dump(const std::string& filename);
     bool load(const std::string& filename);
 
+    //Common Commands
+    bool flushAll();
+
+    //Key Value commands
+    void set(const std::string& key, const std::string& value);
+    bool get(const std::string& key, const std::string& value);
+    std::vector<std::string> keys();
+    std::string type(const std::string& key);
+    bool del(const std::string& key);
+    //expire
+    //rename
+
 private:
     RedisDatabase() = default;
     ~RedisDatabase() = default;

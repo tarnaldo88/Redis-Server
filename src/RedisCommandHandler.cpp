@@ -106,6 +106,7 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     RedisDatabase& db = RedisDatabase::getInstance();
 
     //check commands
+    //First check for Common Commands
     if (cmd == "PING") {
         // RESP: simple string +PONG or echo back message if provided
         if (tokens.size() >= 2) {
@@ -122,10 +123,33 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
         }
     } else if (cmd == "FLUSHALL") {
         // If a real flush exists, call it on db; otherwise acknowledge
-        // db.flushAll();
+        db.flushAll();
         response << "+OK\r\n";
     }
     // Key/Value operations
+    else if(cmd == "SET")
+    {
+        if(tokens.size() < 3){
+            response << "-ERR wrong number of arguments for 'SET' command. Requires Key and Value\r\n";
+        }
+
+        db.set(tokens[1], tokens[2]);
+        response << "+OK\r\n";
+    }
+    else if(cmd == "GET")
+    {
+        if(tokens.size() < 3){
+            response << "-ERR wrong number of arguments for 'GET' command. Requires Key and Value\r\n";
+        } else {
+            std::string val;
+            if(db.get(tokens[1], tokens[2])){
+                response << "$" << val.size() << "\r\n" << val << "\r\n";
+            } else {
+                response << "$-1\r\n";
+            }            
+        }        
+    }
+
     // List Operations
     // Hash Operations
     else {

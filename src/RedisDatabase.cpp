@@ -109,6 +109,37 @@ bool RedisDatabase::load(const std::string &filename)
     return true;
 }
 
+bool RedisDatabase::flushAll()
+{
+    return false;
+}
+
+void RedisDatabase::set(const std::string& key, const std::string& value)
+{
+    kv_store[key] = value;
+}
+
+bool RedisDatabase::get(const std::string &key, const std::string &value)
+{
+    // key = kv_store.first;
+
+    return false;
+}
+
+std::vector<std::string> RedisDatabase::keys()
+{
+    return std::vector<std::string>();
+}
+
+std::string RedisDatabase::type(const std::string &key)
+{
+    return std::string();
+}
+
+bool RedisDatabase::del(const std::string &key)
+{
+    return false;
+}
 
 /*
 Key-Value (K)
