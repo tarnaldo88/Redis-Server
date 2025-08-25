@@ -31,7 +31,23 @@ bool RedisDatabase::dump(const std::string &filename)
         ofs << "K" << kv.first << " " << kv.second;
     }
 
-    return false;
+    for(const auto& kv : list_store){
+        ofs << "L" << kv.first;
+        for(const auto& item : kv.second){
+            ofs << " " << item;
+        }
+        ofs << "\n";
+    }
+
+    for(const auto& kv : hash_store){
+        ofs << "L" << kv.first;
+        for(const auto& item : kv.second){
+            ofs << item.first << ":" << item.second;            
+        }
+        ofs << "\n";
+    }
+
+    return true;
 }
 
 bool RedisDatabase::load(const std::string &filename)
