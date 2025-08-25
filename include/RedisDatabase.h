@@ -7,6 +7,7 @@
 #include <fstream>
 #include <unordered_map>
 #include <sstream>
+#include <chrono>
 
 class RedisDatabase {
 public:
@@ -27,7 +28,9 @@ public:
     std::string type(const std::string& key);
     bool del(const std::string& key);
     //expire
+    bool expire(const std::string& key, const std::string& seconds);
     //rename
+    bool rename(const std::string& oldKey, const std::string& newKey);
 
 private:
     RedisDatabase() = default;
@@ -39,6 +42,8 @@ private:
     std::unordered_map<std::string, std::string> kv_store;
     std::unordered_map<std::string, std::vector<std::string>> list_store;
     std::unordered_map<std::string, std::unordered_map<std::string, std::string>> hash_store;
+
+    std::unordered_map<std::string, std::chrono::steady_clock::time_point> expire_map;
 
 };
 

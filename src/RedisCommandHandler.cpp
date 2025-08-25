@@ -160,7 +160,45 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     }
     else if(cmd == "TYPE")
     {
-        
+        if (tokens.size() < 2) {
+            response << "-ERR wrong number of arguments for 'TYPE' command. Requires key\r\n";
+        } else {            
+            response << "+" << db.type(tokens[1]) << "\r\n";
+        }
+    }
+    else if(cmd == "DEL" || cmd == "UNLINK")
+    {
+        if (tokens.size() < 2) {
+            response << "-ERR wrong number of arguments for " << cmd << "command. Requires key\r\n";
+        } else {
+            bool res = db.del(tokens[1]);
+            response << ":" << res << "\r\n";
+        }
+    }
+    else if (cmd =="EXPIRE")
+    {
+        if (tokens.size() < 2) {
+            response << "-ERR wrong number of arguments for " << cmd << "command. Requires key and seconds.\r\n";
+        } else {
+            if(db.expire(tokens[1], tokens[2])){
+                response << "+OK\r\n";
+            } else {
+
+            }            
+        }
+    }
+    else if(cmd == "RENAME")
+    {
+        if (tokens.size() < 2) {
+            response << "-ERR wrong number of arguments for " << cmd << "command. Requires old key and new key.\r\n";
+        } else {
+            if(db.rename(tokens[1], tokens[2])) {
+                response << "+OK\r\n";
+            } else {
+                
+            }
+
+        }
     }
     // List Operations
     // Hash Operations

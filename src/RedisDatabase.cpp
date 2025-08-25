@@ -138,6 +138,18 @@ std::string RedisDatabase::type(const std::string &key)
 
 bool RedisDatabase::del(const std::string &key)
 {
+    // kv_store[key].erase();
+    return true;
+}
+
+bool RedisDatabase::expire(const std::string &key, const std::string& seconds)
+{
+    return false;
+}
+
+bool RedisDatabase::rename(const std::string &oldKey, const std::string &newKey)
+{
+    
     return false;
 }
 
