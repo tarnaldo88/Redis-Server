@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <vector>
+#include <signal.h>
 
 using socket_t = int;
 
@@ -24,6 +25,9 @@ private:
     int server_socket;
     std::atomic<bool> running;
     static const socket_t INVALID_SOCK = -1;
+
+    //setup signal handling for graceful shutdown
+    void setupSignalHandler();
 };
 
 #endif

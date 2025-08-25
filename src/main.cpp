@@ -1,5 +1,6 @@
 #include "main.h"
 #include "RedisServer.h"
+#include "RedisDatabase.h"
 
 int main(int argc, char* argv[]) {
     //default port for now
@@ -12,8 +13,11 @@ int main(int argc, char* argv[]) {
     std::thread persistanceThread([](){
         while(true){
             std::this_thread::sleep_for(std::chrono::seconds(300));
-            // if(!RedisDatabase) {}
-            //dump database
+            if(!RedisDatabase::getInstance().dump("dump.my_rdb")) {
+                std::cerr << "Error dumping Database. \n";
+            } else {
+                std::cout <<"Database dumped to dump.my_rdb\n";
+            }            
 
         }
     });
