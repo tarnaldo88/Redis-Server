@@ -71,7 +71,7 @@ std::vector<std::string> parseRespCommand(const std::string &input){
 
 RedisCommandHandler::RedisCommandHandler() {}
 
-static std::string handlePing(const std::vector<std::string>& /*tokens*/, RedisDatabase& /*db*/) {
+static std::string handlePing(const std::vector<std::string>& tokens, RedisDatabase& /*db*/) {
         return "+PONG\r\n";
     }
 
@@ -118,7 +118,7 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
             response << "-ERR wrong number of arguments for 'echo' command\r\n";
         } else {
             const std::string& msg = tokens[1];
-            response << "$" << msg.size() << "\r\n" << msg << "\r\n";
+            response << "+" << msg.size() << "\r\n" << msg << "\r\n";
         }
     } else if (cmd == "FLUSHALL") {
         // If a real flush exists, call it on db; otherwise acknowledge
