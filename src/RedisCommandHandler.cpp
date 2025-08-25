@@ -148,8 +148,20 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
                 response << "$-1\r\n";
             }            
         }        
-    }
+    } 
+    else if(cmd == "KEYS")
+    {
+        std::vector<std::string> allKeys = db.keys();
+        response << "*" << allKeys.size() << "\r\n";
 
+        for(const auto& key : allKeys){
+            response << "$" << key.size() << "\r\n" << key << "\r\n";
+        }
+    }
+    else if(cmd == "TYPE")
+    {
+        
+    }
     // List Operations
     // Hash Operations
     else {
