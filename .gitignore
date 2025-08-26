@@ -1,1 +1,7 @@
+build/
 
+dump.my_rdb
+build/main.o
+build/RedisCommandHandler.o
+build/RedisDatabase.o
+build/RedisServer.o

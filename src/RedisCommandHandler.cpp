@@ -138,11 +138,11 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     }
     else if(cmd == "GET")
     {
-        if(tokens.size() < 3){
+        if(tokens.size() < 2){
             response << "-ERR wrong number of arguments for 'GET' command. Requires Key and Value\r\n";
         } else {
             std::string val;
-            if(db.get(tokens[1], tokens[2])){
+            if(db.get(tokens[1], val)){
                 response << "$" << val.size() << "\r\n" << val << "\r\n";
             } else {
                 response << "$-1\r\n";
