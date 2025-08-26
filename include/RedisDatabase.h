@@ -23,7 +23,7 @@ public:
 
     //Key Value commands
     void set(const std::string& key, const std::string& value);
-    bool get(const std::string& key, const std::string& value);
+    bool get(const std::string& key, std::string& value);
     std::vector<std::string> keys();
     std::string type(const std::string& key);
     bool del(const std::string& key);
