@@ -28,7 +28,7 @@ public:
     std::string type(const std::string& key);
     bool del(const std::string& key);
     //expire
-    bool expire(const std::string& key, const std::string& seconds);
+    bool expire(const std::string& key, int seconds);
     //rename
     bool rename(const std::string& oldKey, const std::string& newKey);
 

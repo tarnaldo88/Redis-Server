@@ -175,19 +175,33 @@ std::string RedisDatabase::type(const std::string &key)
 
 bool RedisDatabase::del(const std::string &key)
 {
-    kv_store.erase(key);
+    std::lock_guard<std::mutex> lock(db_mutex);
+    bool erased = false;
+    erased |= kv_store.erase(key) > 0;
+    erased |= list_store.erase(key) > 0;
+    erased |= hash_store.erase(key) > 0;
+    
+    return erased;
+}
+
+bool RedisDatabase::expire(const std::string &key, int seconds)
+{
+    std::lock_guard<std::mutex> lock(db_mutex);
+    bool expired = (kv_store.find(key) != kv_store.end()) || (list_store.find(key) != list_store.end() || (hash_store.find(key) != hash_store.end()));
+
+    if(!expired) return false;
+
+    expire_map[key] = std::chrono::steady_clock::now() + std::chrono::seconds(seconds);
     return true;
 }
 
-bool RedisDatabase::expire(const std::string &key, const std::string& seconds)
-{
-    return false;
-}
-
 bool RedisDatabase::rename(const std::string &oldKey, const std::string &newKey)
-{
-    
-    return false;
+{    
+    kv_store[newKey] = kv_store[oldKey];
+    list_store[newKey] = list_store[oldKey];
+    hash_store[newKey] = hash_store[oldKey];
+
+    return del(oldKey);
 }
 
 /*
