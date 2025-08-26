@@ -71,20 +71,20 @@ std::vector<std::string> parseRespCommand(const std::string &input){
 
 RedisCommandHandler::RedisCommandHandler() {}
 
-static std::string handlePing(const std::vector<std::string>& tokens, RedisDatabase& /*db*/) {
-        return "+PONG\r\n";
-    }
+// static std::string handlePing(const std::vector<std::string>& tokens, RedisDatabase& /*db*/) {
+//         return "+PONG\r\n";
+//     }
 
-static std::string handleEcho(const std::vector<std::string>& tokens, RedisDatabase& /*db*/) {
-    if (tokens.size() < 2)
-        return "-Error: ECHO requires a message\r\n";
-    return "+" + tokens[1] + "\r\n";
-}
+// static std::string handleEcho(const std::vector<std::string>& tokens, RedisDatabase& /*db*/) {
+//     if (tokens.size() < 2)
+//         return "-Error: ECHO requires a message\r\n";
+//     return "+" + tokens[1] + "\r\n";
+// }
 
-static std::string handleFlushAll(const std::vector<std::string>& /*tokens*/, RedisDatabase& db) {
-    // db.flushAll();
-    return "+OK\r\n";
-}
+// static std::string handleFlushAll(const std::vector<std::string>& /*tokens*/, RedisDatabase& db) {
+//     // db.flushAll();
+//     return "+OK\r\n";
+// }
 
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     //Using RESP parser;
@@ -119,7 +119,7 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
             response << "-ERR wrong number of arguments for 'echo' command\r\n";
         } else {
             const std::string& msg = tokens[1];
-            response << "+" << msg.size() << "\r\n" << msg << "\r\n";
+            response << "$" << msg.size() << "\r\n" << msg << "\r\n";            
         }
     } else if (cmd == "FLUSHALL") {
         // If a real flush exists, call it on db; otherwise acknowledge
@@ -180,7 +180,7 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
         if (tokens.size() < 2) {
             response << "-ERR wrong number of arguments for " << cmd << "command. Requires key and seconds.\r\n";
         } else {
-            if(db.expire(tokens[1], tokens[2])){
+            if(db.expire(tokens[1], std::stoi(tokens[2]))){
                 response << "+OK\r\n";
             } else {
 

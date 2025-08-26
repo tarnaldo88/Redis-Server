@@ -210,26 +210,26 @@ bool RedisDatabase::rename(const std::string &oldKey, const std::string &newKey)
         found = true;
     }
 
-    auto itLv = list_store.find(oldKey);
+    auto itList = list_store.find(oldKey);
 
-    if(itLv != list_store.end()){
-        list_store[newKey] = itLv->second;
+    if(itList != list_store.end()){
+        list_store[newKey] = itList->second;
         list_store.erase(oldKey);
         found = true;
     }
 
-    auto itMv = hash_store.find(oldKey);
+    auto itMap = hash_store.find(oldKey);
 
-    if(itMv != hash_store.end()){
-        hash_store[newKey] = itMv->second;
+    if(itMap != hash_store.end()){
+        hash_store[newKey] = itMap->second;
         hash_store.erase(oldKey);
         found = true;
     }
 
-    auto itEv = expire_map.find(oldKey);
+    auto itExpire = expire_map.find(oldKey);
 
-    if(itEv != expire_map.end()){
-        expire_map[newKey] = itEv->second;
+    if(itExpire != expire_map.end()){
+        expire_map[newKey] = itExpire->second;
         expire_map.erase(oldKey);
         found = true;
     }
