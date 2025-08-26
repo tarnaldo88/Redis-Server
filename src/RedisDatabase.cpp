@@ -29,6 +29,7 @@ bool RedisDatabase::dump(const std::string &filename)
 
     for(const auto& kv : kv_store){
         ofs << "K" << kv.first << " " << kv.second;
+        ofs << "\n";
     }
 
     for(const auto& kv : list_store){
@@ -42,7 +43,7 @@ bool RedisDatabase::dump(const std::string &filename)
     for(const auto& kv : hash_store){
         ofs << "H" << kv.first;
         for(const auto& item : kv.second){
-            ofs << item.first << ":" << item.second;            
+            ofs << " " << item.first << " : " << item.second;            
         }
         ofs << "\n";
     }
@@ -255,7 +256,7 @@ EXAMPLE DUMP FILE CONTENTS
 K name Alice
 K city moorpark
 L stuff things cosas potatoes
-L c++ python java c javascript sql
+L prgl c++ python java c javascript sql
 H user:100 name:arnaldo age:90 email:test@test.com
 H user:230 name:MrTest age:120 email:tesasdfasft@test.com
 

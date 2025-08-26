@@ -5,3 +5,4 @@ build/main.o
 build/RedisCommandHandler.o
 build/RedisDatabase.o
 build/RedisServer.o
+build/RedisDatabase.o
