@@ -259,7 +259,7 @@ std::vector<std::string> RedisDatabase::elements()
     return result;
 }
 
-bool RedisDatabase::lindex(const std::string& key, int index, const std::string& value)
+bool RedisDatabase::lindex(const std::string& key, int index, std::string& value)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
 
@@ -275,7 +275,7 @@ bool RedisDatabase::lSet(const std::string &key, const int &index, const std::st
     return true;
 }
 
-int RedisDatabase::lRemove(const std::string &key, const int &count, const std::string &value)
+int RedisDatabase::lRemove(const std::string &key,  int count, const std::string &value)
 {
     auto it = list_store.find(key);
     if (it == list_store.end()) return 0;  // no such list

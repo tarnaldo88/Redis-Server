@@ -205,10 +205,18 @@ static std::string handleLindex(const std::vector<std::string>& tokens, RedisDat
 
 static std::string handleLset(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if (tokens.size() < 4) {
-        return "-ERR wrong number of arguments for LSET command.\r\n";
+        return "-ERR LSET requires key, index, and value.\r\n";
     } else {            
-        bool result = db.lSet(tokens[1], std::stoi(tokens[2]), tokens[3]);
-        return + ":" + std::string(result ? "1" : "0") + "\r\n";
+        try {
+            int index = std::stoi(tokens[2]);
+            if(db.lSet(tokens[1], index, tokens[3])){
+                return "+OK\r\n";
+            } else {
+                return "-Error: Index out of range\r\n";
+            }
+        } catch (const std::exception&){
+            return "-Error: invalid index\r\n";
+        }
     }
 }
 
