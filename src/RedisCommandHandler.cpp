@@ -196,6 +196,8 @@ static std::string handleLindex(const std::vector<std::string>& tokens, RedisDat
         std::string value;
         if (db.lindex(tokens[1], index, value)){
             return "$" + std::to_string(value.size()) + "\r\n" + value + "\r\n";
+        } else {
+            return "$-1\r\n";
         }
         
     }
