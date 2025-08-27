@@ -131,8 +131,10 @@ static std::string handleDel(const std::vector<std::string>& tokens, RedisDataba
     }
 }
 
-static std::string handleKeys(const std::vector<std::string>& tokens, RedisDatabase& db, std::ostringstream& response) {
+static std::string handleKeys(const std::vector<std::string>& tokens, RedisDatabase& db) {
     std::vector<std::string> allKeys = db.keys();
+    std::ostringstream response;
+
     response << "*" << allKeys.size() << "\r\n";
 
     for(const auto& key : allKeys){
@@ -182,7 +184,6 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
 
     std::string cmd = tokens[0];
     std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::toupper);
-    std::ostringstream response;
     RedisDatabase& db = RedisDatabase::getInstance();
 
     //check commands
@@ -212,7 +213,7 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     } 
     else if(cmd == "KEYS")
     {
-        return handleKeys(tokens, db, response);
+        return handleKeys(tokens, db);
     }
     else if(cmd == "TYPE")
     {
