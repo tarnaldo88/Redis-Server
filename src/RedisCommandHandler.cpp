@@ -166,6 +166,30 @@ static std::string handleRename(const std::vector<std::string>& tokens, RedisDat
     }        
     return "-Error: Key not found or rename failed\r\n";
 }
+
+static std::string handleLlen(const std::vector<std::string>& /*tokens*/, RedisDatabase& db) {
+    return std::to_string(db.llen());
+}
+
+static std::string handleLGet(const std::vector<std::string>& tokens, RedisDatabase& db) {
+    std::vector<std::string> allElements = db.elements();
+    std::ostringstream response;
+
+    response << "*" << allElements.size() << "\r\n";
+
+    for(const auto& element : allElements){
+        response << "$" << element.size() << "\r\n" << element << "\r\n";
+    }
+    return response.str();
+}
+
+static std::string handleLindex(const std::vector<std::string>& tokens, RedisDatabase& db) {
+    if (tokens.size() < 3) {
+        return "-ERR wrong number of arguments for 'TYPE' command. Requires key\r\n";
+    } else {            
+        return + "+" + db.lindex(tokens[1], std::stoi(tokens[2])) + "\r\n";
+    }
+}
         
 
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
@@ -232,8 +256,21 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
         return handleRename(tokens, db);
     }
     // List Operations
+    else if(cmd == "LLEN")
+    {
+        return handleLlen(tokens, db);
+    }
+    else if(cmd == "LGET")
+    {
+        return handleLGet(tokens, db);
+    }
+    else if(cmd == "LINDEX")
+    {
+        return handleLindex(tokens, db);
+    }
     // Hash Operations
-    else {
+    else
+    {
         return "-ERR unknown command '" + tokens[0] + "'\r\n";
     }
 }

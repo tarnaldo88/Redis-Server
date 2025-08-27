@@ -229,6 +229,46 @@ bool RedisDatabase::rename(const std::string &oldKey, const std::string &newKey)
     return found;                                                                                                                       
 }
 
+int RedisDatabase::llen()
+{
+    std::lock_guard<std::mutex> lock(db_mutex);
+    return list_store.size();
+}
+
+std::vector<std::string> RedisDatabase::elements()
+{
+    std::lock_guard<std::mutex> lock(db_mutex);
+    std::vector<std::string> result;
+    std::vector<std::unordered_map<std::string, std::unordered_map<std::string, std::string>>> maps;
+
+    for(const auto& pair :kv_store){
+        result.push_back(pair.second);
+    }
+
+    for(const auto& pair :list_store){
+        for(const auto& ele : pair.second){
+            result.push_back(ele);
+        }
+    }
+
+    for(const auto& pair :hash_store){
+        for(const auto& ele : pair.second){
+            result.push_back(ele.second);            
+        }
+    }
+    return result;
+}
+
+std::string RedisDatabase::lindex(const std::string &key, const int &index)
+{
+    return list_store[key][index];
+}
+
+bool RedisDatabase::lSet(const std::string &key, const int &index, const std::string &value)
+{
+    return false;
+}
+
 /*
 Key-Value (K)
 kv_store["name"] = "Alice";

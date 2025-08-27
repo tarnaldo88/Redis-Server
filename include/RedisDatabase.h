@@ -32,6 +32,12 @@ public:
     //rename
     bool rename(const std::string& oldKey, const std::string& newKey);
 
+    //List Operations
+    int llen();
+    std::vector<std::string> elements();
+    std::string lindex(const std::string& key, const int& index);
+    bool lSet(const std::string& key, const int& index, const std::string& value);
+
 private:
     RedisDatabase() = default;
     ~RedisDatabase() = default;
