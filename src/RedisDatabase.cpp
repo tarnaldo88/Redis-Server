@@ -286,10 +286,25 @@ bool RedisDatabase::lindex(const std::string& key, int index, std::string& value
     return true;
 }
 
-bool RedisDatabase::lSet(const std::string &key, const int &index, const std::string &value)
+bool RedisDatabase::lSet(const std::string &key, int index, const std::string &value)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
-    list_store[key][index] = value;
+    auto it = list_store.find(key);
+
+    if(it == list_store.end()) return false;
+    
+    auto& lst = it->second;
+
+    if(index < 0) {
+        index = lst.size() + index;
+    }
+   
+    //if still less than zero after giving list size, return false
+    if(index < 0 || static_cast<size_t>(index) >= lst.size()){
+        return false;
+    }
+    
+    lst[index] = value;
     return true;
 }
 
