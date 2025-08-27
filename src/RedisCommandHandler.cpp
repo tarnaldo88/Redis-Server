@@ -227,6 +227,24 @@ static std::string handleLPop(const std::vector<std::string>& tokens, RedisDatab
     return "";
 }
 
+static std::string handleRPush(const std::vector<std::string>& tokens, RedisDatabase& db){
+    if(tokens.size() < 2){
+
+    } else {
+        return "-ERR wrong number of arguments for " + tokens[1] +" command.\r\n";
+    }
+    return "";
+}
+
+static std::string handleRPop(const std::vector<std::string>& tokens, RedisDatabase& db){
+    if(tokens.size() < 3){
+
+    } else {
+        return "-ERR wrong number of arguments for " + tokens[1] +" command.\r\n";
+    }
+    return "";
+}
+
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     //Using RESP parser;
     std::vector<std::string> tokens = parseRespCommand(commandLine);
@@ -311,13 +329,21 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     {
         return handleLrem(tokens, db);
     }
-    else if(cmd == "LPUSH" || cmd == "RPUSH")
+    else if(cmd == "LPUSH")
     {
-
+        return  handleLPush(tokens,db);
     }
-    else if(cmd == "LPOP" || cmd == "RPOP")
+    else if(cmd == "RPUSH")
     {
-        
+        return  handleLPush(tokens,db);
+    }
+    else if(cmd == "LPOP")
+    {
+        return  handleRPop(tokens,db);
+    }
+    else if( cmd == "RPOP")
+    {
+        return  handleRPop(tokens,db);
     }
     // Hash Operations
     else
