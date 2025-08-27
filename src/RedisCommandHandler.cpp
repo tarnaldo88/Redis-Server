@@ -167,8 +167,13 @@ static std::string handleRename(const std::vector<std::string>& tokens, RedisDat
     return "-Error: Key not found or rename failed\r\n";
 }
 
-static std::string handleLlen(const std::vector<std::string>& /*tokens*/, RedisDatabase& db) {
-    return std::to_string(db.llen());
+static std::string handleLlen(const std::vector<std::string>& tokens, RedisDatabase& db) {
+    if(tokens.size() < 2){
+        return "-ERR LLEN requires a key.\r\n";
+    } else {
+        ssize_t len = db.llen(tokens[1]);
+        return ":" + std::to_string(len) + "\r\n";
+    }
 }
 
 static std::string handleLGet(const std::vector<std::string>& tokens, RedisDatabase& db) {
@@ -185,7 +190,7 @@ static std::string handleLGet(const std::vector<std::string>& tokens, RedisDatab
 
 static std::string handleLindex(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if (tokens.size() < 3) {
-        return "-ERR wrong number of arguments for " + tokens[1] +" command.\r\n";
+        return "-ERR LINDEX requires key and index.\r\n";
     } else {            
         return + "+" + db.lindex(tokens[1], std::stoi(tokens[2])) + "\r\n";
     }
@@ -193,7 +198,7 @@ static std::string handleLindex(const std::vector<std::string>& tokens, RedisDat
 
 static std::string handleLset(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if (tokens.size() < 4) {
-        return "-ERR wrong number of arguments for " + tokens[1] +" command.\r\n";
+        return "-ERR wrong number of arguments for LSET command.\r\n";
     } else {            
         bool result = db.lSet(tokens[1], std::stoi(tokens[2]), tokens[3]);
         return + ":" + std::string(result ? "1" : "0") + "\r\n";
@@ -202,38 +207,41 @@ static std::string handleLset(const std::vector<std::string>& tokens, RedisDatab
 
 static std::string handleLrem(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if (tokens.size() < 4) {
-        return "-ERR wrong number of arguments for " + tokens[1] +" command.\r\n";
+        return "-ERR wrong number of arguments for LREM command.\r\n";
     } else {            
         bool result = db.lSet(tokens[1], std::stoi(tokens[2]), tokens[3]);
-        return + ":" + std::string(result ? "1" : "0") + "\r\n";
+        return ":" + std::string(result ? "1" : "0") + "\r\n";
     }
 }
         
 static std::string handleLPush(const std::vector<std::string>& tokens, RedisDatabase& db){
     if(tokens.size() < 2){
-
+        return "-ERR LPUSH requires key and value.\r\n";
     } else {
-        return "-ERR wrong number of arguments for " + tokens[1] +" command.\r\n";
+        db.lpush(tokens[1], tokens[2]);
+        ssize_t len = db.llen(tokens[1]);
+        return ":" + std::to_string(len) + "\r\n";
     }
-    return "";
+    
 }
 
 static std::string handleLPop(const std::vector<std::string>& tokens, RedisDatabase& db){
     if(tokens.size() < 3){
-
-    } else {
         return "-ERR wrong number of arguments for " + tokens[1] +" command.\r\n";
+    } else {
+        return "";
     }
-    return "";
+    
 }
 
 static std::string handleRPush(const std::vector<std::string>& tokens, RedisDatabase& db){
     if(tokens.size() < 2){
-
+        return "-ERR LPUSH requires key and value.\r\n";
     } else {
-        return "-ERR wrong number of arguments for " + tokens[1] +" command.\r\n";
+        db.rpush(tokens[1], tokens[2]);
+        ssize_t len = db.llen(tokens[1]);
+        return ":" + std::to_string(len) + "\r\n";
     }
-    return "";
 }
 
 static std::string handleRPop(const std::vector<std::string>& tokens, RedisDatabase& db){

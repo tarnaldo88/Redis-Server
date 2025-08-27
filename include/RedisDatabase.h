@@ -33,11 +33,13 @@ public:
     bool rename(const std::string& oldKey, const std::string& newKey);
 
     //List Operations
-    int llen();
+    ssize_t llen(const std::string& key);
     std::vector<std::string> elements();
     std::string lindex(const std::string& key, const int& index);
     bool lSet(const std::string& key, const int& index, const std::string& value);
     int lRemove(const std::string& key, const int& count, const std::string& value);
+    void lpush(const std::string& key, const std::string& value);
+    void rpush(const std::string& key, const std::string& value);
 
 private:
     RedisDatabase() = default;
