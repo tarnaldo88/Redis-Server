@@ -76,8 +76,9 @@ static std::string handlePing(const std::vector<std::string>& /*tokens */, Redis
     }
 
 static std::string handleEcho(const std::vector<std::string>& tokens, RedisDatabase& /*db*/) {
-    if (tokens.size() < 2)
+    if (tokens.size() < 2) {
         return "-Error: ECHO requires a message\r\n";
+    }        
     const std::string& msg = tokens[1];
     return "$" + std::to_string(msg.size()) + "\r\n" + msg + "\r\n"; 
 }
@@ -89,45 +90,79 @@ static std::string handleFlushAll(const std::vector<std::string>& /*tokens*/, Re
 
 static std::string handleSet(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if(tokens.size() < 2){
-            return "-ERR wrong number of arguments for 'GET' command. Requires Key and Value\r\n";
+        return "-ERR wrong number of arguments for 'GET' command. Requires Key and Value\r\n";
+    } else {
+        std::string val;
+        if(db.get(tokens[1], val)){
+            return "$" + std::to_string(val.size()) + "\r\n" + val + "\r\n";
         } else {
-            std::string val;
-            if(db.get(tokens[1], val)){
-                return "$" + std::to_string(val.size()) + "\r\n" + val + "\r\n";
-            } else {
-                return "$-1\r\n";
-            }            
-        }  
+            return "$-1\r\n";
+        }            
+    }  
 }
 
 static std::string handleGet(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if(tokens.size() < 2){
-            return "-ERR wrong number of arguments for 'GET' command. Requires Key and Value\r\n";
+        return "-ERR wrong number of arguments for 'GET' command. Requires Key and Value\r\n";
+    } else {
+        std::string val;
+        if(db.get(tokens[1], val)){
+            return "$" + std::to_string(val.size()) + "\r\n" + val + "\r\n";
         } else {
-            std::string val;
-            if(db.get(tokens[1], val)){
-                return "$" + std::to_string(val.size()) + "\r\n" + val + "\r\n";
-            } else {
-                return "$-1\r\n";
-            }            
-        }  
+            return "$-1\r\n";
+        }            
+    }  
 }
 
 static std::string handleType(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if (tokens.size() < 2) {
-            return "-ERR wrong number of arguments for 'TYPE' command. Requires key\r\n";
-        } else {            
-            return + "+" + db.type(tokens[1]) + "\r\n";
-        }
+        return "-ERR wrong number of arguments for 'TYPE' command. Requires key\r\n";
+    } else {            
+        return + "+" + db.type(tokens[1]) + "\r\n";
+    }
 }
 
 static std::string handleDel(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if (tokens.size() < 2) {
-            return "-ERR wrong number of arguments for " + tokens[0] + "command. Requires key\r\n";
+        return "-ERR wrong number of arguments for " + tokens[0] + "command. Requires key\r\n";
+    } else {
+        bool res = db.del(tokens[1]);
+        return ":" + std::string(res ? "true" : "false") + "\r\n";
+    }
+}
+
+static std::string handleKeys(const std::vector<std::string>& tokens, RedisDatabase& db, std::ostringstream& response) {
+    std::vector<std::string> allKeys = db.keys();
+    response << "*" << allKeys.size() << "\r\n";
+
+    for(const auto& key : allKeys){
+        response << "$" << key.size() << "\r\n" << key << "\r\n";
+    }
+    return response.str();
+}
+
+//TODO FINISH THIS FUNC
+static std::string handleExpire(const std::vector<std::string>& tokens, RedisDatabase& db) {
+    if (tokens.size() < 2) {
+        return "-ERR wrong number of arguments for " + tokens[0] + "command. Requires key and seconds.\r\n";
+    } else {
+        if(db.expire(tokens[1], std::stoi(tokens[2]))){
+            return + "+OK\r\n";
         } else {
-            bool res = db.del(tokens[1]);
-            return ":" + std::string(res ? "true" : "false") + "\r\n";
-        }
+
+        }            
+    }
+}
+
+static std::string handleRename(const std::vector<std::string>& tokens, RedisDatabase& db) {
+    if (tokens.size() < 3) {
+        return "-Error: RENAME requires old key and new key\r\n";
+    }
+     
+    if (db.rename(tokens[1], tokens[2])) {
+        return "+OK\r\n";
+    }        
+    return "-Error: Key not found or rename failed\r\n";
 }
         
 
@@ -152,12 +187,17 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
 
     //check commands
     //First check for Common Commands
-    if (cmd == "PING") {
+    if (cmd == "PING") 
+    {
         // RESP: simple string +PONG or echo back message if provided        
         return handlePing(tokens, db);        
-    } else if (cmd == "ECHO") {
+    } 
+    else if (cmd == "ECHO") 
+    {
         return handleEcho(tokens,db) ;        
-    } else if (cmd == "FLUSHALL") {
+    } 
+    else if (cmd == "FLUSHALL") 
+    {
         // If a real flush exists, call it on db; otherwise acknowledge
         handleFlushAll(tokens,db);
     }
@@ -172,12 +212,8 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     } 
     else if(cmd == "KEYS")
     {
-        std::vector<std::string> allKeys = db.keys();
-        response << "*" << allKeys.size() << "\r\n";
+        return handleKeys(tokens, db, response);
 
-        for(const auto& key : allKeys){
-            response << "$" << key.size() << "\r\n" << key << "\r\n";
-        }
     }
     else if(cmd == "TYPE")
     {
@@ -189,34 +225,15 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     }
     else if (cmd =="EXPIRE")
     {
-        if (tokens.size() < 2) {
-            response << "-ERR wrong number of arguments for " << cmd << "command. Requires key and seconds.\r\n";
-        } else {
-            if(db.expire(tokens[1], std::stoi(tokens[2]))){
-                response << "+OK\r\n";
-            } else {
-
-            }            
-        }
+        handleExpire(tokens, db);
     }
     else if(cmd == "RENAME")
     {
-        if (tokens.size() < 2) {
-            response << "-ERR wrong number of arguments for " << cmd << "command. Requires old key and new key.\r\n";
-        } else {
-            if(db.rename(tokens[1], tokens[2])) {
-                response << "+OK\r\n";
-            } else {
-                
-            }
-
-        }
+        return handleRename(tokens, db);
     }
     // List Operations
     // Hash Operations
     else {
-        response << "-ERR unknown command '" << tokens[0] << "'\r\n";
+        return "-ERR unknown command '" + tokens[0] + "'\r\n";
     }
-
-    return response.str();
 }
