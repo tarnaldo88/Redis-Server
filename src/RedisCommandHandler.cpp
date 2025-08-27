@@ -90,7 +90,7 @@ static std::string handleFlushAll(const std::vector<std::string>& /*tokens*/, Re
 
 static std::string handleSet(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if(tokens.size() < 2){
-        return "-ERR wrong number of arguments for 'GET' command. Requires Key and Value\r\n";
+        return "-ERR wrong number of arguments for 'SET' command.\r\n";
     } else {
         std::string val;
         if(db.get(tokens[1], val)){
@@ -103,7 +103,7 @@ static std::string handleSet(const std::vector<std::string>& tokens, RedisDataba
 
 static std::string handleGet(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if(tokens.size() < 2){
-        return "-ERR wrong number of arguments for 'GET' command. Requires Key and Value\r\n";
+        return "-ERR wrong number of arguments for 'GET' command.\r\n";
     } else {
         std::string val;
         if(db.get(tokens[1], val)){
@@ -185,7 +185,7 @@ static std::string handleLGet(const std::vector<std::string>& tokens, RedisDatab
 
 static std::string handleLindex(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if (tokens.size() < 3) {
-        return "-ERR wrong number of arguments for 'TYPE' command. Requires key\r\n";
+        return "-ERR wrong number of arguments for " + tokens[1] +" command.\r\n";
     } else {            
         return + "+" + db.lindex(tokens[1], std::stoi(tokens[2])) + "\r\n";
     }
@@ -193,7 +193,7 @@ static std::string handleLindex(const std::vector<std::string>& tokens, RedisDat
 
 static std::string handleLset(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if (tokens.size() < 4) {
-        return "-ERR wrong number of arguments for 'TYPE' command. Requires key\r\n";
+        return "-ERR wrong number of arguments for " + tokens[1] +" command.\r\n";
     } else {            
         bool result = db.lSet(tokens[1], std::stoi(tokens[2]), tokens[3]);
         return + ":" + std::string(result ? "1" : "0") + "\r\n";
@@ -202,13 +202,30 @@ static std::string handleLset(const std::vector<std::string>& tokens, RedisDatab
 
 static std::string handleLrem(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if (tokens.size() < 4) {
-        return "-ERR wrong number of arguments for 'TYPE' command. Requires key\r\n";
+        return "-ERR wrong number of arguments for " + tokens[1] +" command.\r\n";
     } else {            
         bool result = db.lSet(tokens[1], std::stoi(tokens[2]), tokens[3]);
         return + ":" + std::string(result ? "1" : "0") + "\r\n";
     }
 }
         
+static std::string handleLPush(const std::vector<std::string>& tokens, RedisDatabase& db){
+    if(tokens.size() < 2){
+
+    } else {
+        return "-ERR wrong number of arguments for " + tokens[1] +" command.\r\n";
+    }
+    return "";
+}
+
+static std::string handleLPop(const std::vector<std::string>& tokens, RedisDatabase& db){
+    if(tokens.size() < 3){
+
+    } else {
+        return "-ERR wrong number of arguments for " + tokens[1] +" command.\r\n";
+    }
+    return "";
+}
 
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     //Using RESP parser;
@@ -293,6 +310,14 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     else if(cmd == "LREM")
     {
         return handleLrem(tokens, db);
+    }
+    else if(cmd == "LPUSH" || cmd == "RPUSH")
+    {
+
+    }
+    else if(cmd == "LPOP" || cmd == "RPOP")
+    {
+        
     }
     // Hash Operations
     else
