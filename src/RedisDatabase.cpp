@@ -267,9 +267,22 @@ std::vector<std::string> RedisDatabase::elements()
 bool RedisDatabase::lindex(const std::string& key, int index, std::string& value)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
+    auto it = list_store.find(key);
 
-    //check if key index exists
-    // value = list_store[key][index];
+    if(it == list_store.end()) return false;
+    
+    const auto& lst = it->second;
+
+    if(index < 0) {
+        index = lst.size() + index;
+    }
+   
+    //if still less than zero after giving list size, return false
+    if(index < 0 || static_cast<size_t>(index) >= lst.size()){
+        return false;
+    }
+
+    value = lst[index];
     return true;
 }
 
