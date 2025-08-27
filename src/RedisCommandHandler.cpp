@@ -71,20 +71,65 @@ std::vector<std::string> parseRespCommand(const std::string &input){
 
 RedisCommandHandler::RedisCommandHandler() {}
 
-// static std::string handlePing(const std::vector<std::string>& tokens, RedisDatabase& /*db*/) {
-//         return "+PONG\r\n";
-//     }
+static std::string handlePing(const std::vector<std::string>& /*tokens */, RedisDatabase& /*db*/) {
+        return "+PONG\r\n";
+    }
 
-// static std::string handleEcho(const std::vector<std::string>& tokens, RedisDatabase& /*db*/) {
-//     if (tokens.size() < 2)
-//         return "-Error: ECHO requires a message\r\n";
-//     return "+" + tokens[1] + "\r\n";
-// }
+static std::string handleEcho(const std::vector<std::string>& tokens, RedisDatabase& /*db*/) {
+    if (tokens.size() < 2)
+        return "-Error: ECHO requires a message\r\n";
+    const std::string& msg = tokens[1];
+    return "$" + std::to_string(msg.size()) + "\r\n" + msg + "\r\n"; 
+}
 
-// static std::string handleFlushAll(const std::vector<std::string>& /*tokens*/, RedisDatabase& db) {
-//     // db.flushAll();
-//     return "+OK\r\n";
-// }
+static std::string handleFlushAll(const std::vector<std::string>& /*tokens*/, RedisDatabase& db) {
+    db.flushAll();
+    return "+OK\r\n";
+}
+
+static std::string handleSet(const std::vector<std::string>& tokens, RedisDatabase& db) {
+    if(tokens.size() < 2){
+            return "-ERR wrong number of arguments for 'GET' command. Requires Key and Value\r\n";
+        } else {
+            std::string val;
+            if(db.get(tokens[1], val)){
+                return "$" + std::to_string(val.size()) + "\r\n" + val + "\r\n";
+            } else {
+                return "$-1\r\n";
+            }            
+        }  
+}
+
+static std::string handleGet(const std::vector<std::string>& tokens, RedisDatabase& db) {
+    if(tokens.size() < 2){
+            return "-ERR wrong number of arguments for 'GET' command. Requires Key and Value\r\n";
+        } else {
+            std::string val;
+            if(db.get(tokens[1], val)){
+                return "$" + std::to_string(val.size()) + "\r\n" + val + "\r\n";
+            } else {
+                return "$-1\r\n";
+            }            
+        }  
+}
+
+static std::string handleType(const std::vector<std::string>& tokens, RedisDatabase& db) {
+    if (tokens.size() < 2) {
+            return "-ERR wrong number of arguments for 'TYPE' command. Requires key\r\n";
+        } else {            
+            return + "+" + db.type(tokens[1]) + "\r\n";
+        }
+}
+
+static std::string handleDel(const std::vector<std::string>& tokens, RedisDatabase& db) {
+    if (tokens.size() < 2) {
+            return "-ERR wrong number of arguments for " + tokens[0] + "command. Requires key\r\n";
+        } else {
+            bool res = db.del(tokens[1]);
+            return ":" + std::string(res ? "true" : "false") + "\r\n";
+        }
+}
+        
 
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     //Using RESP parser;
@@ -108,46 +153,22 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     //check commands
     //First check for Common Commands
     if (cmd == "PING") {
-        // RESP: simple string +PONG or echo back message if provided
-        if (tokens.size() >= 2) {
-            response << "+" << tokens[1] << "\r\n";
-        } else {
-            response << "+PONG\r\n";
-        }
+        // RESP: simple string +PONG or echo back message if provided        
+        return handlePing(tokens, db);        
     } else if (cmd == "ECHO") {
-        if (tokens.size() < 2) {
-            response << "-ERR wrong number of arguments for 'echo' command\r\n";
-        } else {
-            const std::string& msg = tokens[1];
-            response << "$" << msg.size() << "\r\n" << msg << "\r\n";            
-        }
+        return handleEcho(tokens,db) ;        
     } else if (cmd == "FLUSHALL") {
         // If a real flush exists, call it on db; otherwise acknowledge
-        db.flushAll();
-        response << "+OK\r\n";
+        handleFlushAll(tokens,db);
     }
     // Key/Value operations
     else if(cmd == "SET")
     {
-        if(tokens.size() < 3){
-            response << "-ERR wrong number of arguments for 'SET' command. Requires Key and Value\r\n";
-        }
-
-        db.set(tokens[1], tokens[2]);
-        response << "+OK\r\n";
+        return handleSet(tokens, db);
     }
     else if(cmd == "GET")
     {
-        if(tokens.size() < 2){
-            response << "-ERR wrong number of arguments for 'GET' command. Requires Key and Value\r\n";
-        } else {
-            std::string val;
-            if(db.get(tokens[1], val)){
-                response << "$" << val.size() << "\r\n" << val << "\r\n";
-            } else {
-                response << "$-1\r\n";
-            }            
-        }        
+        return handleGet(tokens, db);
     } 
     else if(cmd == "KEYS")
     {
@@ -160,20 +181,11 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     }
     else if(cmd == "TYPE")
     {
-        if (tokens.size() < 2) {
-            response << "-ERR wrong number of arguments for 'TYPE' command. Requires key\r\n";
-        } else {            
-            response << "+" << db.type(tokens[1]) << "\r\n";
-        }
+        return handleType(tokens, db);
     }
     else if(cmd == "DEL" || cmd == "UNLINK")
     {
-        if (tokens.size() < 2) {
-            response << "-ERR wrong number of arguments for " << cmd << "command. Requires key\r\n";
-        } else {
-            bool res = db.del(tokens[1]);
-            response << ":" << res << "\r\n";
-        }
+        handleDel(tokens,db);
     }
     else if (cmd =="EXPIRE")
     {
