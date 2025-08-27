@@ -259,10 +259,13 @@ std::vector<std::string> RedisDatabase::elements()
     return result;
 }
 
-std::string RedisDatabase::lindex(const std::string &key, const int &index)
+bool RedisDatabase::lindex(const std::string& key, int index, const std::string& value)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
-    return list_store[key][index];
+
+    //check if key index exists
+    // value = list_store[key][index];
+    return true;
 }
 
 bool RedisDatabase::lSet(const std::string &key, const int &index, const std::string &value)
@@ -327,6 +330,16 @@ void RedisDatabase::lpush(const std::string &key, const std::string &value)
 
 void RedisDatabase::rpush(const std::string &key, const std::string &value)
 {
+}
+
+bool RedisDatabase::lpop(const std::string &key, std::string &value)
+{
+    return false;
+}
+
+bool RedisDatabase::rpop(const std::string &key, std::string &value)
+{
+    return false;
 }
 
 /*

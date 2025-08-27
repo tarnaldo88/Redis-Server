@@ -35,11 +35,13 @@ public:
     //List Operations
     ssize_t llen(const std::string& key);
     std::vector<std::string> elements();
-    std::string lindex(const std::string& key, const int& index);
+    bool lindex(const std::string& key, int index, const std::string& value);
     bool lSet(const std::string& key, const int& index, const std::string& value);
     int lRemove(const std::string& key, const int& count, const std::string& value);
     void lpush(const std::string& key, const std::string& value);
     void rpush(const std::string& key, const std::string& value);
+    bool lpop(const std::string& key, std::string& value);
+    bool rpop(const std::string& key, std::string& value);
 
 private:
     RedisDatabase() = default;

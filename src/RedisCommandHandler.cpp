@@ -192,7 +192,7 @@ static std::string handleLindex(const std::vector<std::string>& tokens, RedisDat
     if (tokens.size() < 3) {
         return "-ERR LINDEX requires key and index.\r\n";
     } else {            
-        return + "+" + db.lindex(tokens[1], std::stoi(tokens[2])) + "\r\n";
+        return "+" + (db.lindex(tokens[1], std::stoi(tokens[2]), tokens[3]) ? 1 : 0) + "\r\n";
     }
 }
 
@@ -227,11 +227,15 @@ static std::string handleLPush(const std::vector<std::string>& tokens, RedisData
 
 static std::string handleLPop(const std::vector<std::string>& tokens, RedisDatabase& db){
     if(tokens.size() < 3){
-        return "-ERR wrong number of arguments for " + tokens[1] +" command.\r\n";
+        return "-ERR LPOP requires key.\r\n";
     } else {
-        return "";
-    }
-    
+        std::string val;
+        if(db.lpop(tokens[1], val)){
+            return "$" + std::to_string(val.size()) + "\r\n" + val + "\r\n";
+        } else {
+            return "$-1\r\n";
+        }        
+    }    
 }
 
 static std::string handleRPush(const std::vector<std::string>& tokens, RedisDatabase& db){
@@ -246,11 +250,15 @@ static std::string handleRPush(const std::vector<std::string>& tokens, RedisData
 
 static std::string handleRPop(const std::vector<std::string>& tokens, RedisDatabase& db){
     if(tokens.size() < 3){
-
+        return "-ERR RPOP requires key\r\n";
     } else {
-        return "-ERR wrong number of arguments for " + tokens[1] +" command.\r\n";
+        std::string val;
+        if(db.lpop(tokens[1], val)){
+            return "$" + std::to_string(val.size()) + "\r\n" + val + "\r\n";
+        } else {
+            return "$-1\r\n";
+        }        
     }
-    return "";
 }
 
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
