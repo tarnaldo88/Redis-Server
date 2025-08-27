@@ -288,8 +288,15 @@ int RedisDatabase::lRemove(const std::string &key,  int count, const std::string
 
     auto& vec = it->second;
     int removed = 0;
+    // Remove all elements equal to element.
+    if(count == 0)
+    {
+        auto new_end = std::remove(vec.begin(), vec.end(), value);
+        removed = std::distance(new_end, vec.end());
+        vec.erase(new_end, vec.end());        
+    }
     //Remove elements equal to element moving from head to tail.
-    if( count > 0)
+    else if( count > 0)
     {
         for (auto iter = vec.begin(); iter != vec.end() && removed < count;) {
             if (*iter == value) {
@@ -301,32 +308,21 @@ int RedisDatabase::lRemove(const std::string &key,  int count, const std::string
         }
     } 
     // Remove elements equal to element moving from tail to head.
-    else if( count < 0)
+    else
     {
         for (auto riter = vec.rbegin(); riter != vec.rend() && removed < -count;) {
-            if (*riter == value) {
-                // erase with reverse_iterator requires base() adjustment
-                riter = std::vector<std::string>::reverse_iterator(
-                    vec.erase((++riter).base())
-                );
-                ++removed;
+            if(*riter == value){
+                auto fwdIter = riter.base();
+            --fwdIter;
+            fwdIter = vec.erase(fwdIter);
+            ++removed;
+            riter = std::reverse_iterator(fwdIter);
             } else {
                 ++riter;
-            }
+            } 
         }
     }
-    // Remove all elements equal to element.
-    else if(count == 0)
-    {
-         for (auto iter = vec.begin(); iter != vec.end();) {
-            if (*iter == value) {
-                iter = vec.erase(iter);
-                ++removed;
-            } else {
-                ++iter;
-            }
-        }
-    }
+    
     return removed;
 }
 

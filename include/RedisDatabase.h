@@ -8,6 +8,8 @@
 #include <unordered_map>
 #include <sstream>
 #include <chrono>
+#include <algorithm>
+#include <iterator>
 
 class RedisDatabase {
 public:
