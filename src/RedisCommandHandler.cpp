@@ -141,15 +141,15 @@ static std::string handleKeys(const std::vector<std::string>& tokens, RedisDatab
     return response.str();
 }
 
-//TODO FINISH THIS FUNC
 static std::string handleExpire(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if (tokens.size() < 2) {
         return "-ERR wrong number of arguments for " + tokens[0] + "command. Requires key and seconds.\r\n";
     } else {
-        if(db.expire(tokens[1], std::stoi(tokens[2]))){
+        int seconds = std::stoi(tokens[2]);        
+        if(db.expire(tokens[1], seconds)){
             return + "+OK\r\n";
         } else {
-
+            return "-Error: Key not found\r\n";
         }            
     }
 }
@@ -201,7 +201,7 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
         // If a real flush exists, call it on db; otherwise acknowledge
         return handleFlushAll(tokens,db);
     }
-    // Key/Value operations
+    // Key/Value Operations
     else if(cmd == "SET")
     {
         return handleSet(tokens, db);
@@ -213,7 +213,6 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     else if(cmd == "KEYS")
     {
         return handleKeys(tokens, db, response);
-
     }
     else if(cmd == "TYPE")
     {
