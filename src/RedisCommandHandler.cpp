@@ -199,6 +199,15 @@ static std::string handleLset(const std::vector<std::string>& tokens, RedisDatab
         return + ":" + std::string(result ? "1" : "0") + "\r\n";
     }
 }
+
+static std::string handleLrem(const std::vector<std::string>& tokens, RedisDatabase& db) {
+    if (tokens.size() < 4) {
+        return "-ERR wrong number of arguments for 'TYPE' command. Requires key\r\n";
+    } else {            
+        bool result = db.lSet(tokens[1], std::stoi(tokens[2]), tokens[3]);
+        return + ":" + std::string(result ? "1" : "0") + "\r\n";
+    }
+}
         
 
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
@@ -280,6 +289,10 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     else if(cmd == "LSET")
     {
         return handleLset(tokens, db);
+    }
+    else if(cmd == "LREM")
+    {
+        return handleLrem(tokens, db);
     }
     // Hash Operations
     else

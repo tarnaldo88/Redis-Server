@@ -272,6 +272,11 @@ bool RedisDatabase::lSet(const std::string &key, const int &index, const std::st
     return true;
 }
 
+bool RedisDatabase::lRemove(const std::string &key, const int &count, const std::string &value)
+{
+    return false;
+}
+
 /*
 Key-Value (K)
 kv_store["name"] = "Alice";
