@@ -191,8 +191,13 @@ static std::string handleLGet(const std::vector<std::string>& tokens, RedisDatab
 static std::string handleLindex(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if (tokens.size() < 3) {
         return "-ERR LINDEX requires key and index.\r\n";
-    } else {            
-        return "+" + (db.lindex(tokens[1], std::stoi(tokens[2]), tokens[3]) ? 1 : 0) + "\r\n";
+    } else { 
+        int index = std::stoi(tokens[2]);
+        std::string value;
+        if (db.lindex(tokens[1], index, value)){
+            return "$" + std::to_string(value.size()) + "\r\n" + value + "\r\n";
+        }
+        
     }
 }
 
@@ -207,10 +212,11 @@ static std::string handleLset(const std::vector<std::string>& tokens, RedisDatab
 
 static std::string handleLrem(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if (tokens.size() < 4) {
-        return "-ERR wrong number of arguments for LREM command.\r\n";
+        return "-ERR LREM requires key, count, and value.\r\n";
     } else {            
-        bool result = db.lSet(tokens[1], std::stoi(tokens[2]), tokens[3]);
-        return ":" + std::string(result ? "1" : "0") + "\r\n";
+        int count = std::stoi(tokens[2]);
+        int removed = db.lRemove(tokens[1], count, tokens[3]);
+        return ":" + std::to_string(removed) + "\r\n";
     }
 }
         
