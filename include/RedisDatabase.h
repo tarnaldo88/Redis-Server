@@ -37,7 +37,7 @@ public:
     std::vector<std::string> elements();
     std::string lindex(const std::string& key, const int& index);
     bool lSet(const std::string& key, const int& index, const std::string& value);
-    bool lRemove(const std::string& key, const int& count, const std::string& value);
+    int lRemove(const std::string& key, const int& count, const std::string& value);
 
 private:
     RedisDatabase() = default;

@@ -272,9 +272,53 @@ bool RedisDatabase::lSet(const std::string &key, const int &index, const std::st
     return true;
 }
 
-bool RedisDatabase::lRemove(const std::string &key, const int &count, const std::string &value)
+int RedisDatabase::lRemove(const std::string &key, const int &count, const std::string &value)
 {
-    return false;
+    auto it = list_store.find(key);
+    if (it == list_store.end()) return 0;  // no such list
+
+    auto& vec = it->second;
+    int removed = 0;
+    //Remove elements equal to element moving from head to tail.
+    if( count > 0)
+    {
+        for (auto iter = vec.begin(); iter != vec.end() && removed < count;) {
+            if (*iter == value) {
+                iter = vec.erase(iter);
+                ++removed;
+            } else {
+                ++iter;
+            }
+        }
+    } 
+    // Remove elements equal to element moving from tail to head.
+    else if( count < 0)
+    {
+        for (auto riter = vec.rbegin(); riter != vec.rend() && removed < -count;) {
+            if (*riter == value) {
+                // erase with reverse_iterator requires base() adjustment
+                riter = std::vector<std::string>::reverse_iterator(
+                    vec.erase((++riter).base())
+                );
+                ++removed;
+            } else {
+                ++riter;
+            }
+        }
+    }
+    // Remove all elements equal to element.
+    else if(count == 0)
+    {
+         for (auto iter = vec.begin(); iter != vec.end();) {
+            if (*iter == value) {
+                iter = vec.erase(iter);
+                ++removed;
+            } else {
+                ++iter;
+            }
+        }
+    }
+    return removed;
 }
 
 /*
