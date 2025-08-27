@@ -199,7 +199,7 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     else if (cmd == "FLUSHALL") 
     {
         // If a real flush exists, call it on db; otherwise acknowledge
-        handleFlushAll(tokens,db);
+        return handleFlushAll(tokens,db);
     }
     // Key/Value operations
     else if(cmd == "SET")
@@ -221,11 +221,11 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     }
     else if(cmd == "DEL" || cmd == "UNLINK")
     {
-        handleDel(tokens,db);
+        return handleDel(tokens,db);
     }
     else if (cmd =="EXPIRE")
     {
-        handleExpire(tokens, db);
+        return handleExpire(tokens, db);
     }
     else if(cmd == "RENAME")
     {
