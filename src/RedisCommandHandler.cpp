@@ -127,7 +127,7 @@ static std::string handleDel(const std::vector<std::string>& tokens, RedisDataba
         return "-ERR wrong number of arguments for " + tokens[0] + "command. Requires key\r\n";
     } else {
         bool res = db.del(tokens[1]);
-        return ":" + std::string(res ? "true" : "false") + "\r\n";
+        return ":" + std::string(res ? "1" : "0") + "\r\n";
     }
 }
 
@@ -188,6 +188,15 @@ static std::string handleLindex(const std::vector<std::string>& tokens, RedisDat
         return "-ERR wrong number of arguments for 'TYPE' command. Requires key\r\n";
     } else {            
         return + "+" + db.lindex(tokens[1], std::stoi(tokens[2])) + "\r\n";
+    }
+}
+
+static std::string handleLset(const std::vector<std::string>& tokens, RedisDatabase& db) {
+    if (tokens.size() < 4) {
+        return "-ERR wrong number of arguments for 'TYPE' command. Requires key\r\n";
+    } else {            
+        bool result = db.lSet(tokens[1], std::stoi(tokens[2]), tokens[3]);
+        return + ":" + std::string(result ? "1" : "0") + "\r\n";
     }
 }
         
@@ -267,6 +276,10 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     else if(cmd == "LINDEX")
     {
         return handleLindex(tokens, db);
+    }
+    else if(cmd == "LSET")
+    {
+        return handleLset(tokens, db);
     }
     // Hash Operations
     else

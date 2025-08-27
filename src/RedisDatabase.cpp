@@ -261,12 +261,15 @@ std::vector<std::string> RedisDatabase::elements()
 
 std::string RedisDatabase::lindex(const std::string &key, const int &index)
 {
+    std::lock_guard<std::mutex> lock(db_mutex);
     return list_store[key][index];
 }
 
 bool RedisDatabase::lSet(const std::string &key, const int &index, const std::string &value)
 {
-    return false;
+    std::lock_guard<std::mutex> lock(db_mutex);
+    list_store[key][index] = value;
+    return true;
 }
 
 /*
