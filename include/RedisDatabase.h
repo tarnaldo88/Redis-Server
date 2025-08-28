@@ -45,6 +45,20 @@ public:
     bool lpop(const std::string& key, std::string& value);
     bool rpop(const std::string& key, std::string& value);
 
+    //Hash Operations
+    ssize_t Hlen(const std::string& key);
+    bool Hset(const std::string& key, const std::string& field, const std::string& value);
+    bool Hexists(const std::string& key, const std::string& field);
+    int Hdel(const std::string& key, const std::string& field);
+    std::vector<std::string> Hkeys(const std::string& key);
+    std::vector<std::vector<std::string>> Hvals(const std::string& key);
+    std::unordered_map<std::string, std::unordered_map<std::string, std::string>> Hgetall(const std::string& key);
+    
+    
+    
+
+
+
 private:
     RedisDatabase() = default;
     ~RedisDatabase() = default;
