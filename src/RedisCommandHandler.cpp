@@ -89,16 +89,10 @@ static std::string handleFlushAll(const std::vector<std::string>& /*tokens*/, Re
 }
 
 static std::string handleSet(const std::vector<std::string>& tokens, RedisDatabase& db) {
-    if(tokens.size() < 2){
-        return "-ERR wrong number of arguments for 'SET' command.\r\n";
-    } else {
-        std::string val;
-        if(db.get(tokens[1], val)){
-            return "$" + std::to_string(val.size()) + "\r\n" + val + "\r\n";
-        } else {
-            return "$-1\r\n";
-        }            
-    }  
+    if(tokens.size() < 3)
+        return "-Error: SET requires key and value\r\n";
+    db.set(tokens[1], tokens[2]);
+    return "+OK\r\n";
 }
 
 static std::string handleGet(const std::vector<std::string>& tokens, RedisDatabase& db) {
