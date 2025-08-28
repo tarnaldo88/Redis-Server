@@ -186,14 +186,17 @@ static std::string handleLindex(const std::vector<std::string>& tokens, RedisDat
     if (tokens.size() < 3) {
         return "-ERR LINDEX requires key and index.\r\n";
     } else { 
-        int index = std::stoi(tokens[2]);
-        std::string value;
-        if (db.lindex(tokens[1], index, value)){
-            return "$" + std::to_string(value.size()) + "\r\n" + value + "\r\n";
-        } else {
-            return "$-1\r\n";
+        try{
+            int index = std::stoi(tokens[2]);
+            std::string value;
+            if (db.lindex(tokens[1], index, value)){
+                return "$" + std::to_string(value.size()) + "\r\n" + value + "\r\n";
+            } else {
+                return "$-1\r\n";
+            }
+        } catch(const std::exception&) {
+            return "-Error: invalid index\r\n";
         }
-        
     }
 }
 
