@@ -171,7 +171,7 @@ static std::string handleLlen(const std::vector<std::string>& tokens, RedisDatab
 }
 
 static std::string handleLGet(const std::vector<std::string>& tokens, RedisDatabase& db) {
-    std::vector<std::string> allElements = db.elements();
+    std::vector<std::string> allElements = db.Lget(tokens[1]);
     std::ostringstream response;
 
     response << "*" << allElements.size() << "\r\n";
@@ -236,7 +236,7 @@ static std::string handleLPush(const std::vector<std::string>& tokens, RedisData
 }
 
 static std::string handleLPop(const std::vector<std::string>& tokens, RedisDatabase& db){
-    if(tokens.size() < 3){
+    if(tokens.size() < 2){
         return "-ERR LPOP requires key.\r\n";
     } else {
         std::string val;
@@ -259,7 +259,7 @@ static std::string handleRPush(const std::vector<std::string>& tokens, RedisData
 }
 
 static std::string handleRPop(const std::vector<std::string>& tokens, RedisDatabase& db){
-    if(tokens.size() < 3){
+    if(tokens.size() < 2){
         return "-ERR RPOP requires key\r\n";
     } else {
         std::string val;

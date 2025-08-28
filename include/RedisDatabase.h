@@ -36,7 +36,7 @@ public:
 
     //List Operations
     ssize_t llen(const std::string& key);
-    std::vector<std::string> elements();
+    std::vector<std::string> Lget(const std::string& key);
     bool lindex(const std::string& key, int index, std::string& value);
     bool lSet(const std::string& key, int index, const std::string& value);
     int lRemove(const std::string& key, int count, const std::string& value);
@@ -64,6 +64,8 @@ private:
     ~RedisDatabase() = default;
     RedisDatabase(const RedisDatabase&) = delete;
     RedisDatabase& operator=(const RedisDatabase&) = delete;
+
+    void purgeExpired();
 
     std::mutex db_mutex;
     std::unordered_map<std::string, std::string> kv_store;

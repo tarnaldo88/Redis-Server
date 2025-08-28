@@ -189,6 +189,12 @@ bool RedisDatabase::expire(const std::string &key, int seconds)
     return true;
 }
 
+void RedisDatabase::purgeExpired()
+{
+    std::lock_guard<std::mutex> lock(db_mutex);
+
+}
+
 bool RedisDatabase::rename(const std::string &oldKey, const std::string &newKey)
 {    
     std::lock_guard<std::mutex> lock(db_mutex);
@@ -240,28 +246,14 @@ ssize_t RedisDatabase::llen(const std::string& key)
     }
 }
 
-std::vector<std::string> RedisDatabase::elements()
+std::vector<std::string> RedisDatabase::Lget(const std::string& key)
 {
-    std::lock_guard<std::mutex> lock(db_mutex);
-    std::vector<std::string> result;
-    std::vector<std::unordered_map<std::string, std::unordered_map<std::string, std::string>>> maps;
-
-    for(const auto& pair :kv_store){
-        result.push_back(pair.second);
+     std::lock_guard<std::mutex> lock(db_mutex);
+    auto it = list_store.find(key);
+    if (it != list_store.end()) {
+        return it->second; 
     }
-
-    for(const auto& pair :list_store){
-        for(const auto& ele : pair.second){
-            result.push_back(ele);
-        }
-    }
-
-    for(const auto& pair :hash_store){
-        for(const auto& ele : pair.second){
-            result.push_back(ele.second);            
-        }
-    }
-    return result;
+    return {}; 
 }
 
 bool RedisDatabase::lindex(const std::string& key, int index, std::string& value)
@@ -469,6 +461,8 @@ H user:100 name:arnaldo age:90 email:test@test.com
 H user:230 name:MrTest age:120 email:tesasdfasft@test.com
 
 
-
+RPOP NEEDS WORK
+LGET NEEDS WORK
+EXPIRE NEEDS WORK
 
 */

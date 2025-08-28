@@ -29,3 +29,24 @@ Use case: Set a timeout on keys for caching. For example, cache product details 
 
 RENAME
 Use case: When restructuring keys during a migration or data reorganization, use RENAME to change the key’s name without losing its data.
+
+## Lists
+LGET: LGET <key> → all elements
+LLEN: LLEN <key> → length
+LPUSH/RPUSH: LPUSH <key> <v1> [v2 ...] / RPUSH → push multiple
+LPOP/RPOP: LPOP <key> / RPOP <key> → pop one
+LREM: LREM <key> <count> <value> → remove occurrences
+LINDEX: LINDEX <key> <index> → get element
+LSET: LSET <key> <index> <value> → set element
+
+
+## Hashes
+HSET: HSET <key> <field> <value>
+HGET: HGET <key> <field>
+HEXISTS: HEXISTS <key> <field>
+HDEL: HDEL <key> <field>
+HLEN: HLEN <key> → field count
+HKEYS: HKEYS <key> → all fields
+HVALS: HVALS <key> → all values
+HGETALL: HGETALL <key> → field/value pairs
+HMSET: HMSET <key> <f1> <v1> [f2 v2 ...]
