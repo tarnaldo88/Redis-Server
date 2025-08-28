@@ -277,44 +277,6 @@ static std::string handleRPop(const std::vector<std::string>& tokens, RedisDatab
     }
 }
 
-///HASH HANDLE FUNCTIONS
-static std::string handleHset(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHget(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHexists(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHdel(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHlen(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHvals(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHgetall(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHmset(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHkeys(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet\r\n";
-}
-
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     //Using RESP parser;
     std::vector<std::string> tokens = parseRespCommand(commandLine);
