@@ -462,7 +462,7 @@ H user:230 name:MrTest age:120 email:tesasdfasft@test.com
 
 
 RPOP NEEDS WORK
-LGET NEEDS WORK
+
 EXPIRE NEEDS WORK
 
 */

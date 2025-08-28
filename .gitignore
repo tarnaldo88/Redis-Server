@@ -10,3 +10,4 @@ build/RedisCommandHandler.o
 build/RedisDatabase.o
 build/RedisCommandHandler.o
 build/RedisDatabase.o
+build/RedisCommandHandler.o
