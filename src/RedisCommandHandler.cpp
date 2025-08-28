@@ -312,7 +312,7 @@ static std::string handleHmset(const std::vector<std::string>& tokens, RedisData
 }
 static std::string handleHkeys(const std::vector<std::string>& tokens, RedisDatabase& db)
 {
-    return "-Error: not implemented yet.\r\n";
+    return "-Error: not implemented yet\r\n";
 }
 
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
