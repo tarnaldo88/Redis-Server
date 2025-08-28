@@ -463,6 +463,8 @@ H user:230 name:MrTest age:120 email:tesasdfasft@test.com
 
 RPOP NEEDS WORK
 
+LPUSH AND RPUSH cannot take multiple items, fix this so it matches at least Redis 2.4.0
+
 EXPIRE NEEDS WORK
 
 */
