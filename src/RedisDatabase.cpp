@@ -272,13 +272,14 @@ bool RedisDatabase::lindex(const std::string& key, int index, std::string& value
     if(it == list_store.end()) return false;
     
     const auto& lst = it->second;
+    // int vecSize = static_cast<int>(lst.size());
 
     if(index < 0) {
         index = lst.size() + index;
     }
    
     //if still less than zero after giving list size, return false
-    if(index < 0 || static_cast<size_t>(index) >= lst.size()){
+    if(index < 0 || index >= static_cast<int>(lst.size())){
         return false;
     }
 

@@ -278,74 +278,74 @@ static std::string handleRPop(const std::vector<std::string>& tokens, RedisDatab
 }
 
 ///HASH HANDLE FUNCTIONS
-static std::string handleHset(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHget(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHexists(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHdel(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHlen(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHvals(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHgetall(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHmset(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet.\r\n";
-}
-static std::string handleHkeys(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet\r\n";    
-}
-static std::string handleHget(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet\r\n";
-}
-static std::string handleHexists(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet\r\n";
-}
-static std::string handleHdel(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet\r\n";
-}
-static std::string handleHlen(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet\r\n";
-}
-static std::string handleHvals(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet\r\n";
-}
-static std::string handleHgetall(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet\r\n";
-}
-static std::string handleHmset(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet\r\n";
-}
-static std::string handleHkeys(const std::vector<std::string>& tokens, RedisDatabase& db)
-{
-    return "-Error: not implemented yet\r\n";
-}
+// static std::string handleHset(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet.\r\n";
+// }
+// static std::string handleHget(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet.\r\n";
+// }
+// static std::string handleHexists(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet.\r\n";
+// }
+// static std::string handleHdel(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet.\r\n";
+// }
+// static std::string handleHlen(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet.\r\n";
+// }
+// static std::string handleHvals(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet.\r\n";
+// }
+// static std::string handleHgetall(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet.\r\n";
+// }
+// static std::string handleHmset(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet.\r\n";
+// }
+// static std::string handleHkeys(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet\r\n";    
+// }
+// static std::string handleHget(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet\r\n";
+// }
+// static std::string handleHexists(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet\r\n";
+// }
+// static std::string handleHdel(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet\r\n";
+// }
+// static std::string handleHlen(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet\r\n";
+// }
+// static std::string handleHvals(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet\r\n";
+// }
+// static std::string handleHgetall(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet\r\n";
+// }
+// static std::string handleHmset(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet\r\n";
+// }
+// static std::string handleHkeys(const std::vector<std::string>& tokens, RedisDatabase& db)
+// {
+//     return "-Error: not implemented yet\r\n";
+// }
 
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     //Using RESP parser;
@@ -437,49 +437,53 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     }
     else if(cmd == "RPUSH")
     {
-        return  handleLPush(tokens,db);
+        return  handleRPush(tokens,db);
     }
     else if(cmd == "LPOP")
     {
-        return  handleRPop(tokens,db);
+        return  handleLPop(tokens,db);
     }
     else if( cmd == "RPOP")
     {
         return  handleRPop(tokens,db);
     }
-    else if( cmd == "HSET") 
-    {
-        return handleHset(tokens, db);
-    }
-    else if( cmd == "HDEL") 
-    {
-        return handleHdel(tokens, db);
-    }
-    else if( cmd == "HGET") 
-    {
-        return handleHget(tokens, db);
-    }
-    else if( cmd == "HEXISTS") 
-    {
-        return handleHexists(tokens, db);
-    }
-    else if( cmd == "HLEN") 
-    {
-        return handleHlen(tokens, db);
-    }
-    else if( cmd == "HVALS") 
-    {
-        return handleHvals(tokens, db);
-    }
-    else if( cmd == "HGETALL") 
-    {
-        return handleHgetall(tokens, db);
-    }
-    else if( cmd == "HMSET") 
-    {
-        return handleHmset(tokens, db);
-    }
     // Hash Operations
+    // else if( cmd == "HSET") 
+    // {
+    //     return handleHset(tokens, db);
+    // }
+    // else if( cmd == "HDEL") 
+    // {
+    //     return handleHdel(tokens, db);
+    // }
+    // else if( cmd == "HGET") 
+    // {
+    //     return handleHget(tokens, db);
+    // }
+    // else if( cmd == "HEXISTS") 
+    // {
+    //     return handleHexists(tokens, db);
+    // }
+    // else if( cmd == "HLEN") 
+    // {
+    //     return handleHlen(tokens, db);
+    // }
+    // else if( cmd == "HVALS") 
+    // {
+    //     return handleHvals(tokens, db);
+    // }
+    // else if( cmd == "HGETALL") 
+    // {
+    //     return handleHgetall(tokens, db);
+    // }
+    // else if( cmd == "HMSET") 
+    // {
+    //     return handleHmset(tokens, db);
+    // } 
+    // else if( cmd == "HKEYS") 
+    // {
+    //     return handleHkeys(tokens, db);
+    // }    
     else
     {
         return "-ERR unknown command '" + tokens[0] + "'\r\n";
