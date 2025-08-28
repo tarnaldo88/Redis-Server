@@ -277,6 +277,44 @@ static std::string handleRPop(const std::vector<std::string>& tokens, RedisDatab
     }
 }
 
+///HASH HANDLE FUNCTIONS
+static std::string handleHset(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    return "-Error: not implemented yet.\r\n";
+}
+static std::string handleHget(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    return "-Error: not implemented yet.\r\n";
+}
+static std::string handleHexists(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    return "-Error: not implemented yet.\r\n";
+}
+static std::string handleHdel(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    return "-Error: not implemented yet.\r\n";
+}
+static std::string handleHlen(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    return "-Error: not implemented yet.\r\n";
+}
+static std::string handleHvals(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    return "-Error: not implemented yet.\r\n";
+}
+static std::string handleHgetall(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    return "-Error: not implemented yet.\r\n";
+}
+static std::string handleHmset(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    return "-Error: not implemented yet.\r\n";
+}
+static std::string handleHkeys(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    return "-Error: not implemented yet.\r\n";
+}
+
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     //Using RESP parser;
     std::vector<std::string> tokens = parseRespCommand(commandLine);
@@ -377,9 +415,57 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     {
         return  handleRPop(tokens,db);
     }
+    else if( cmd == "HSET") 
+    {
+        return handleHset(tokens, db);
+    }
+    else if( cmd == "HDEL") 
+    {
+        return handleHdel(tokens, db);
+    }
+    else if( cmd == "HGET") 
+    {
+        return handleHget(tokens, db);
+    }
+    else if( cmd == "HEXISTS") 
+    {
+        return handleHexists(tokens, db);
+    }
+    else if( cmd == "HLEN") 
+    {
+        return handleHlen(tokens, db);
+    }
+    else if( cmd == "HVALS") 
+    {
+        return handleHvals(tokens, db);
+    }
+    else if( cmd == "HGETALL") 
+    {
+        return handleHgetall(tokens, db);
+    }
+    else if( cmd == "HMSET") 
+    {
+        return handleHmset(tokens, db);
+    }
     // Hash Operations
     else
     {
         return "-ERR unknown command '" + tokens[0] + "'\r\n";
     }
 }
+
+/*
+
+Hashes
+HSET: HSET <key> <field> <value>
+HGET: HGET <key> <field>
+HEXISTS: HEXISTS <key> <field>
+HDEL: HDEL <key> <field>
+HLEN: HLEN <key> → field count
+HKEYS: HKEYS <key> → all fields
+HVALS: HVALS <key> → all values
+HGETALL: HGETALL <key> → field/value pairs
+HMSET: HMSET <key> <f1> <v1> [f2 v2 ...]
+
+*/
+

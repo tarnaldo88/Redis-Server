@@ -401,6 +401,41 @@ bool RedisDatabase::rpop(const std::string &key, std::string &value)
     }    
 }
 
+ssize_t RedisDatabase::Hlen(const std::string &key)
+{
+    return ssize_t();
+}
+
+bool RedisDatabase::Hset(const std::string &key, const std::string &field, const std::string &value)
+{
+    return false;
+}
+
+bool RedisDatabase::Hexists(const std::string &key, const std::string &field)
+{
+    return false;
+}
+
+int RedisDatabase::Hdel(const std::string &key, const std::string &field)
+{
+    return 0;
+}
+
+std::vector<std::string> RedisDatabase::Hkeys(const std::string &key)
+{
+    return std::vector<std::string>();
+}
+
+std::vector<std::vector<std::string>> RedisDatabase::Hvals(const std::string &key)
+{
+    return std::vector<std::vector<std::string>>();
+}
+
+std::unordered_map<std::string, std::unordered_map<std::string, std::string>> RedisDatabase::Hgetall(const std::string &key)
+{
+    return std::unordered_map<std::string, std::unordered_map<std::string, std::string>>();
+}
+
 /*
 Key-Value (K)
 kv_store["name"] = "Alice";
