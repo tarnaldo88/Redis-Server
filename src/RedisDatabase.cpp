@@ -353,11 +353,29 @@ void RedisDatabase::lpush(const std::string &key, const std::string &value)
     list_store[key].insert(list_store[key].begin(), value);
 }
 
+void RedisDatabase::lpush(const std::string &key, const std::vector<std::string> &values)
+{
+    std::lock_guard<std::mutex> lock(db_mutex);
+
+    //loop through adding in values
+    for(const auto& value : values){
+        list_store[key].insert(list_store[key].begin(), value);    
+    }    
+}
 
 void RedisDatabase::rpush(const std::string &key, const std::string &value)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
     list_store[key].push_back(value);
+}
+
+void RedisDatabase::rpush(const std::string &key, const std::vector<std::string> &values)
+{
+    std::lock_guard<std::mutex> lock(db_mutex);
+    //loop and add in values
+    for(const auto& value : values){
+        list_store[key].push_back(value);
+    }    
 }
 
 bool RedisDatabase::lpop(const std::string &key, std::string &value)

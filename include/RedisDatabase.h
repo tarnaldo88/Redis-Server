@@ -41,7 +41,9 @@ public:
     bool lSet(const std::string& key, int index, const std::string& value);
     int lRemove(const std::string& key, int count, const std::string& value);
     void lpush(const std::string& key, const std::string& value);
+    void lpush(const std::string& key, const std::vector<std::string>& values);
     void rpush(const std::string& key, const std::string& value);
+    void rpush(const std::string& key, const std::vector<std::string>& values);
     bool lpop(const std::string& key, std::string& value);
     bool rpop(const std::string& key, std::string& value);
 
