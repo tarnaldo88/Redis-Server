@@ -463,26 +463,66 @@ bool RedisDatabase::Hexists(const std::string &key, const std::string &field)
 bool RedisDatabase::Hdel(const std::string &key, const std::string &field)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
-    
-    return false;
+    hash_store[key].erase(field);
+
+    if(hash_store[key].find(field) == hash_store[key].end()){
+        return true;
+    } else {
+        return false;
+    }
+
 }
 
 std::vector<std::string> RedisDatabase::Hkeys(const std::string &key)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
-    return std::vector<std::string>();
+    std::vector<std::string> keysVec;
+    auto it = hash_store.find(key);
+
+    if(it != hash_store.end())
+    {
+        for(const auto& pair : hash_store[key])
+        {
+            keysVec.emplace_back(pair.first);
+        }
+        return keysVec;
+    } 
+
+    return keysVec;    
 }
 
 std::vector<std::string> RedisDatabase::Hvals(const std::string &key)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
-    return std::vector<std::string>();
+    std::vector<std::string> valuesVec;
+    auto it = hash_store.find(key);
+
+    if(it != hash_store.end())
+    {
+        for(const auto& pair : hash_store[key])
+        {
+            valuesVec.emplace_back(pair.second);
+        }
+    }
+
+    return valuesVec;
 }
 
 std::unordered_map<std::string, std::string> RedisDatabase::Hgetall(const std::string &key)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
-    return std::unordered_map<std::string, std::string>();
+    std::unordered_map<std::string, std::string> all;
+    auto it = hash_store.find(key);
+
+    if(it != hash_store.end())
+    {
+        for(const auto& pair : hash_store[key])
+        {
+            all[pair.first] = pair.second;
+        }
+    }
+
+    return all;
 }
 
 bool RedisDatabase::HMset(const std::string &key, const std::vector<std::pair<std::string, std::string>> &fieldValues)
