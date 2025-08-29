@@ -22,7 +22,7 @@ std::vector<std::string> parseRespCommand(const std::string &input){
         std::string token;
 
         while(iss >> token) {
-            tokens.push_back(token);
+            tokens.emplace_back(token);
         }
 
         return tokens;
@@ -63,7 +63,7 @@ std::vector<std::string> parseRespCommand(const std::string &input){
         }
 
         std::string token = input.substr(pos,len);
-        tokens.push_back(token);
+        tokens.emplace_back(token);
         pos += len + 2; //skip token & crlf
     }
     return tokens;
@@ -235,7 +235,7 @@ static std::string handleLPush(const std::vector<std::string>& tokens, RedisData
         
         //loop through tokens to grab all the arguments input after the key.
         for(size_t i = 2; i < tokens.size(); i++){
-            values.push_back(tokens[i]);
+            values.emplace_back(tokens[i]);
         }
         db.lpush(tokens[1], values);
         ssize_t len = db.llen(tokens[1]);
@@ -265,7 +265,7 @@ static std::string handleRPush(const std::vector<std::string>& tokens, RedisData
 
         //loop through tokens to grab all the arguments input after the key.
         for(size_t i = 2; i < tokens.size(); i++){
-            values.push_back(tokens[i]);
+            values.emplace_back(tokens[i]);
         }
         db.rpush(tokens[1], values);
         ssize_t len = db.llen(tokens[1]);

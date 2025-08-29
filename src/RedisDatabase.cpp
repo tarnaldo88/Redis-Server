@@ -366,7 +366,7 @@ void RedisDatabase::lpush(const std::string &key, const std::vector<std::string>
 void RedisDatabase::rpush(const std::string &key, const std::string &value)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
-    list_store[key].push_back(value);
+    list_store[key].emplace_back(value);
 }
 
 void RedisDatabase::rpush(const std::string &key, const std::vector<std::string> &values)
@@ -374,7 +374,7 @@ void RedisDatabase::rpush(const std::string &key, const std::vector<std::string>
     std::lock_guard<std::mutex> lock(db_mutex);
     //loop and add in values
     for(const auto& value : values){
-        list_store[key].push_back(value);
+        list_store[key].emplace_back(value);
     }    
 }
 
@@ -434,7 +434,7 @@ bool RedisDatabase::Hexists(const std::string &key, const std::string &field)
 
 bool RedisDatabase::Hdel(const std::string &key, const std::string &field)
 {
-    return 0;
+    return false;
 }
 
 std::vector<std::string> RedisDatabase::Hkeys(const std::string &key)
