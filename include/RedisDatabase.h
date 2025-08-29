@@ -50,12 +50,13 @@ public:
     //Hash Operations
     ssize_t Hlen(const std::string& key);
     bool Hset(const std::string& key, const std::string& field, const std::string& value);
-    std::vector<std::string> Hget(const std::string& key, const std::string &field);
+    bool Hget(const std::string& key, const std::string &field, std::string& value);
     bool Hexists(const std::string& key, const std::string& field);
-    int Hdel(const std::string& key, const std::string& field);
+    bool Hdel(const std::string& key, const std::string& field);
     std::vector<std::string> Hkeys(const std::string& key);
-    std::vector<std::vector<std::string>> Hvals(const std::string& key);
-    std::unordered_map<std::string, std::unordered_map<std::string, std::string>> Hgetall(const std::string& key);
+    std::vector<std::string> Hvals(const std::string& key);
+    std::unordered_map<std::string, std::string> Hgetall(const std::string& key);
+    bool HMset(const std::string& key, const std::vector<std::pair<std::string, std::string>>& fieldValues);
     
     
     

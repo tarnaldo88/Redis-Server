@@ -422,9 +422,9 @@ bool RedisDatabase::Hset(const std::string &key, const std::string &field, const
     return false;
 }
 
-std::vector<std::string> RedisDatabase::Hget(const std::string &key, const std::string &field)
+bool RedisDatabase::Hget(const std::string &key, const std::string &field, std::string& value)
 {
-    return std::vector<std::string>();
+    return false;
 }
 
 bool RedisDatabase::Hexists(const std::string &key, const std::string &field)
@@ -432,7 +432,7 @@ bool RedisDatabase::Hexists(const std::string &key, const std::string &field)
     return false;
 }
 
-int RedisDatabase::Hdel(const std::string &key, const std::string &field)
+bool RedisDatabase::Hdel(const std::string &key, const std::string &field)
 {
     return 0;
 }
@@ -442,14 +442,19 @@ std::vector<std::string> RedisDatabase::Hkeys(const std::string &key)
     return std::vector<std::string>();
 }
 
-std::vector<std::vector<std::string>> RedisDatabase::Hvals(const std::string &key)
+std::vector<std::string> RedisDatabase::Hvals(const std::string &key)
 {
-    return std::vector<std::vector<std::string>>();
+    return std::vector<std::string>();
 }
 
-std::unordered_map<std::string, std::unordered_map<std::string, std::string>> RedisDatabase::Hgetall(const std::string &key)
+std::unordered_map<std::string, std::string> RedisDatabase::Hgetall(const std::string &key)
 {
-    return std::unordered_map<std::string, std::unordered_map<std::string, std::string>>();
+    return std::unordered_map<std::string, std::string>();
+}
+
+bool RedisDatabase::HMset(const std::string &key, const std::vector<std::pair<std::string, std::string>> &fieldValues)
+{
+    return false;
 }
 
 /*

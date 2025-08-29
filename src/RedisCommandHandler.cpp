@@ -369,8 +369,8 @@ static std::string handleHkeys(const std::vector<std::string>& tokens, RedisData
 
 static std::string handleHmset(const std::vector<std::string>& tokens, RedisDatabase& db)
 {
-    if(tokens.size() < 4){
-        return "-Error: HMSET requires key, field, and value.\r\n";
+    if(tokens.size() < 4 || (tokens.size() % 2 == 1)){
+        return "-Error: HMSET requires key followed by field value pairs.\r\n";
     } else {
         db.Hset(tokens[1], tokens[2], tokens[3]);
         return ":1\r\n";
