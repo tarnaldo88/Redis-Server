@@ -50,6 +50,7 @@ public:
     //Hash Operations
     ssize_t Hlen(const std::string& key);
     bool Hset(const std::string& key, const std::string& field, const std::string& value);
+    std::vector<std::string> Hget(const std::string& key, const std::string &field);
     bool Hexists(const std::string& key, const std::string& field);
     int Hdel(const std::string& key, const std::string& field);
     std::vector<std::string> Hkeys(const std::string& key);

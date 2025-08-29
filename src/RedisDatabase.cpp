@@ -422,6 +422,11 @@ bool RedisDatabase::Hset(const std::string &key, const std::string &field, const
     return false;
 }
 
+std::vector<std::string> RedisDatabase::Hget(const std::string &key, const std::string &field)
+{
+    return std::vector<std::string>();
+}
+
 bool RedisDatabase::Hexists(const std::string &key, const std::string &field)
 {
     return false;
@@ -477,11 +482,6 @@ L stuff things cosas potatoes
 L prgl c++ python java c javascript sql
 H user:100 name:arnaldo age:90 email:test@test.com
 H user:230 name:MrTest age:120 email:tesasdfasft@test.com
-
-
-RPOP NEEDS WORK
-
-LPUSH AND RPUSH cannot take multiple items, fix this so it matches at least Redis 2.4.0
 
 EXPIRE NEEDS WORK
 
