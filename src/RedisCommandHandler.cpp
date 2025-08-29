@@ -231,7 +231,13 @@ static std::string handleLPush(const std::vector<std::string>& tokens, RedisData
     if(tokens.size() < 2){
         return "-ERR LPUSH requires key and value.\r\n";
     } else {
-        db.lpush(tokens[1], tokens[2]);
+        std::vector<std::string> values;
+        
+        //loop through tokens to grab all the arguments input after the key.
+        for(size_t i = 2; i < tokens.size(); i++){
+            values.push_back(tokens[i]);
+        }
+        db.lpush(tokens[1], values);
         ssize_t len = db.llen(tokens[1]);
         return ":" + std::to_string(len) + "\r\n";
     }
@@ -256,11 +262,12 @@ static std::string handleRPush(const std::vector<std::string>& tokens, RedisData
         return "-ERR LPUSH requires key and value.\r\n";
     } else {
         std::vector<std::string> values;
+
         //loop through tokens to grab all the arguments input after the key.
         for(size_t i = 2; i < tokens.size(); i++){
             values.push_back(tokens[i]);
         }
-        db.rpush(tokens[1], tokens[2]);
+        db.rpush(tokens[1], values);
         ssize_t len = db.llen(tokens[1]);
         return ":" + std::to_string(len) + "\r\n";
     }
