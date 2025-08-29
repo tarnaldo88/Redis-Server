@@ -278,7 +278,7 @@ static std::string handleRPop(const std::vector<std::string>& tokens, RedisDatab
         return "-ERR RPOP requires key\r\n";
     } else {
         std::string val;
-        if(db.lpop(tokens[1], val)){
+        if(db.rpop(tokens[1], val)){
             return "$" + std::to_string(val.size()) + "\r\n" + val + "\r\n";
         } else {
             return "$-1\r\n";
