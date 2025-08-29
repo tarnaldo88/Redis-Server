@@ -292,8 +292,8 @@ static std::string handleHset(const std::vector<std::string>& tokens, RedisDatab
     if(tokens.size() < 4){
         return "-Error: HSET requires key, field, and value.\r\n";
     } else {
-        db.Hset(tokens[1], tokens[2], tokens[3]);
-        return ":1\r\n";
+        bool result = db.Hset(tokens[1], tokens[2], tokens[3]);
+        return ":"+ std::to_string(result ? 1 : 0) + "\r\n";
     }
 }
 
@@ -302,8 +302,12 @@ static std::string handleHget(const std::vector<std::string>& tokens, RedisDatab
     if(tokens.size() < 3){
         return "-Error: HGET requires key and field.\r\n";
     } else {
-        db.Hget(tokens[1], tokens[2]);
-        return ":1\r\n";
+        std::string value;
+        if(db.Hget(tokens[1], tokens[2], value)){
+            return "$" + std::to_string(value.size()) + "\r\n" + value + "\r\n";
+        } else {
+          return "$-1\r\n"  ;
+        }
     }
 }
 
@@ -311,9 +315,9 @@ static std::string handleHexists(const std::vector<std::string>& tokens, RedisDa
 {
     if(tokens.size() < 3){
         return "-Error: HEXISTS requires key and field.\r\n";
-    } else {
-        db.Hexists(tokens[1], tokens[2]);
-        return ":1\r\n";
+    } else {        
+        bool exists = db.Hexists(tokens[1], tokens[2]);
+        return ":" + std::to_string(exists ? 1 : 0) + "\r\n";
     }
 }
 
@@ -322,8 +326,8 @@ static std::string handleHdel(const std::vector<std::string>& tokens, RedisDatab
     if(tokens.size() < 3){
         return "-Error: HDEL requires key and field.\r\n";
     } else {
-        db.Hdel(tokens[1], tokens[2]);
-        return ":1\r\n";
+        bool result = db.Hdel(tokens[1], tokens[2]);
+        return ":" + std::to_string(result ? 1 : 0) + "\r\n";
     }
 }
 
@@ -332,18 +336,25 @@ static std::string handleHlen(const std::vector<std::string>& tokens, RedisDatab
     if(tokens.size() < 2){
         return "-Error: HLEN requires key.\r\n";
     } else {
-        db.Hlen(tokens[1]);
-        return ":1\r\n";
+        ssize_t len = db.Hlen(tokens[1]);
+        return ":" + std::to_string(len) + "\r\n";
     }
 }
 
 static std::string handleHvals(const std::vector<std::string>& tokens, RedisDatabase& db)
 {
-    if(tokens.size() < 4){
+    if(tokens.size() < 2){
         return "-Error: HVALS requires key.\r\n";
     } else {
-        db.Hvals(tokens[1]);
-        return ":1\r\n";
+        std::vector<std::string> allValues = db.Hvals(tokens[1]);
+        std::ostringstream response;
+
+        response << "*" << allValues.size() << "\r\n";
+
+        for(const auto& value : allValues){
+            response << "$" << value.size() << "\r\n" << value << "\r\n";
+        }
+        return response.str();
     }
 }
 
@@ -352,8 +363,14 @@ static std::string handleHgetall(const std::vector<std::string>& tokens, RedisDa
     if(tokens.size() < 4){
         return "-Error: HGETALL requires key.\r\n";
     } else {
-        db.Hgetall(tokens[1]);
-        return ":1\r\n";
+        auto hash = db.Hgetall(tokens[1]);
+        std::ostringstream oss;
+        oss << "*" << hash.size() * 2 << "\r\n";
+        for(const auto& pair : hash){
+            oss << "$" << std::to_string(pair.first.size()) << "\r\n" << pair.first << "\r\n";
+            oss << "$" << std::to_string(pair.second.size()) << "\r\n" << pair.second << "\r\n";
+        }
+        return oss.str();
     }
 }
 
@@ -362,8 +379,15 @@ static std::string handleHkeys(const std::vector<std::string>& tokens, RedisData
     if(tokens.size() < 2){
         return "-Error: HKEYS requires key.\r\n";
     } else {
-        db.Hkeys(tokens[1]);
-        return ":1\r\n";
+        std::vector<std::string> allKeys = db.Hkeys(tokens[1]);
+        std::ostringstream response;
+
+        response << "*" << allKeys.size() << "\r\n";
+
+        for(const auto& key : allKeys){
+            response << "$" << key.size() << "\r\n" << key << "\r\n";
+        }
+        return response.str();
     }    
 }
 
@@ -372,8 +396,15 @@ static std::string handleHmset(const std::vector<std::string>& tokens, RedisData
     if(tokens.size() < 4 || (tokens.size() % 2 == 1)){
         return "-Error: HMSET requires key followed by field value pairs.\r\n";
     } else {
-        db.Hset(tokens[1], tokens[2], tokens[3]);
-        return ":1\r\n";
+        std::vector<std::pair<std::string, std::string>> fieldVals;
+
+        //iterate through the input to populate fieldVals before sending to HMset function in RedisDatabase
+        for(size_t i = 2; i < tokens.size(); i += 2){
+            fieldVals.emplace_back(std::pair(tokens[i],tokens[i+1]));
+        }
+
+        bool result = db.HMset(tokens[1], fieldVals);
+        return ":" + std::to_string(result ? 1 : 0) + "\r\n";
     }
 }
 
