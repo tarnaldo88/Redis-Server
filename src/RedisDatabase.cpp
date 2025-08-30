@@ -444,8 +444,7 @@ bool RedisDatabase::Hexists(const std::string &key, const std::string &field)
     std::lock_guard<std::mutex> lock(db_mutex);
     auto it = hash_store.find(key);
     if(it != hash_store.end()){
-        auto exists = hash_store[key].find(field);
-        return (exists != hash_store[key].end());
+        return (it->second.find(field) != hash_store[key].end());
     } else {
         return false;
     }
