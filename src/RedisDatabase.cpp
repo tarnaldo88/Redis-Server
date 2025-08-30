@@ -434,9 +434,8 @@ bool RedisDatabase::Hget(const std::string &key, const std::string &field, std::
             value = secondIt->second;
             return true;
         }        
-    } else {
-        return false;
-    }
+    } 
+    return false;
 }
 
 bool RedisDatabase::Hexists(const std::string &key, const std::string &field)
@@ -564,7 +563,5 @@ H user:230 mm : testes f : t c : v a : b
 H mm test : testes f : t c : v a : b
 
 EXPIRE NEEDS WORK
-
-HMSET DOES NOT TAKE MULTIPLE FIELD VALUE PAIRS
 
 */
