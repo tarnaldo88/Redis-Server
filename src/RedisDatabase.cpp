@@ -599,6 +599,4 @@ H user:100 gg : testes f : t c : v a : b
 H user:230 mm : testes f : t c : v a : b
 H mm test : testes f : t c : v a : b
 
-EXPIRE NEEDS WORK
-
 */
