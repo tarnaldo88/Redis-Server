@@ -453,10 +453,9 @@ bool RedisDatabase::Hexists(const std::string &key, const std::string &field)
 bool RedisDatabase::Hdel(const std::string &key, const std::string &field)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
-    hash_store[key].erase(field);
-
-    if(hash_store[key].find(field) == hash_store[key].end()){
-        return true;
+    auto it = hash_store.find(key);
+    if(it != hash_store.end()){
+        return it->second.erase(field) > 0;
     } else {
         return false;
     }
@@ -471,7 +470,7 @@ std::vector<std::string> RedisDatabase::Hkeys(const std::string &key)
 
     if(it != hash_store.end())
     {
-        for(const auto& pair : hash_store[key])
+        for(const auto& pair : it->second)
         {
             keysVec.emplace_back(pair.first);
         }
@@ -489,7 +488,7 @@ std::vector<std::string> RedisDatabase::Hvals(const std::string &key)
 
     if(it != hash_store.end())
     {
-        for(const auto& pair : hash_store[key])
+        for(const auto& pair : it->second)
         {
             valuesVec.emplace_back(pair.second);
         }
@@ -501,18 +500,13 @@ std::vector<std::string> RedisDatabase::Hvals(const std::string &key)
 std::unordered_map<std::string, std::string> RedisDatabase::Hgetall(const std::string &key)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
-    std::unordered_map<std::string, std::string> all;
-    auto it = hash_store.find(key);
+    std::unordered_map<std::string, std::string> all;    
 
-    if(it != hash_store.end())
+    if(hash_store.find(key) != hash_store.end())
     {
-        for(const auto& pair : hash_store[key])
-        {
-            all[pair.first] = pair.second;
-        }
+        return hash_store[key];
     }
-
-    return all;
+    return {};
 }
 
 bool RedisDatabase::HMset(const std::string &key, const std::vector<std::pair<std::string, std::string>> &fieldValues)
