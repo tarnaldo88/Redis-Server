@@ -400,10 +400,9 @@ static std::string handleHmset(const std::vector<std::string>& tokens, RedisData
 
         //iterate through the input to populate fieldVals before sending to HMset function in RedisDatabase
         for(size_t i = 2; i < tokens.size(); i += 2){
-            fieldVals.emplace_back(std::pair(tokens[i],tokens[i+1]));
-            std::cout << tokens[i] << " v: " << tokens[i + 1];
+            fieldVals.emplace_back(std::pair(tokens[i],tokens[i+1]));            
         }
-                
+
         bool result = db.HMset(tokens[1], fieldVals);
         return ":" + std::to_string(result ? 1 : 0) + "\r\n";
     }
