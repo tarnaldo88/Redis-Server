@@ -24,30 +24,23 @@ bool RedisDatabase::dump(const std::string &filename)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
     std::ofstream ofs(filename, std::ios::binary);
+    if (!ofs) return false;
 
-    if(!ofs) return false;
-
-    for(const auto& kv : kv_store){
-        ofs << "K" << kv.first << " " << kv.second;
-        ofs << "\n";
+    for (const auto& kv: kv_store) {
+        ofs << "K " << kv.first << " " << kv.second << "\n";
     }
-
-    for(const auto& kv : list_store){
-        ofs << "L" << kv.first;
-        for(const auto& item : kv.second){
+    for (const auto& kv : list_store) {
+        ofs << "L " << kv.first;
+        for (const auto& item : kv.second)
             ofs << " " << item;
-        }
         ofs << "\n";
     }
-
-    for(const auto& kv : hash_store){
-        ofs << "H" << kv.first;
-        for(const auto& item : kv.second){
-            ofs << " " << item.first << " : " << item.second;            
-        }
+    for (const auto& kv : hash_store) {
+        ofs << "H " << kv.first;
+        for (const auto& field_val : kv.second) 
+            ofs << " " << field_val.first << ":" << field_val.second;
         ofs << "\n";
     }
-
     return true;
 }
 
@@ -55,15 +48,13 @@ bool RedisDatabase::load(const std::string &filename)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
     std::ifstream ifs(filename, std::ios::binary);
-
-    if(!ifs) return false;
+    if (!ifs) return false;
 
     kv_store.clear();
     list_store.clear();
     hash_store.clear();
 
     std::string line;
-
     while (std::getline(ifs, line)) {
         std::istringstream iss(line);
         char type;
@@ -96,7 +87,6 @@ bool RedisDatabase::load(const std::string &filename)
             hash_store[key] = hash;
         }
     }
-
     return true;
 }
 
@@ -441,8 +431,11 @@ bool RedisDatabase::Hget(const std::string &key, const std::string &field, std::
     std::lock_guard<std::mutex> lock(db_mutex);
     auto it = hash_store.find(key);
     if(it != hash_store.end()){
-        value = hash_store[key][field];
-        return true;
+        auto secondIt = hash_store[key].find(field);
+        if(secondIt != hash_store[key].end()){
+            value = hash_store[key][field];
+            return true;
+        }        
     } else {
         return false;
     }
@@ -573,6 +566,22 @@ L prgl c++ python java c javascript sql
 H user:100 name:arnaldo age:90 email:test@test.com
 H user:230 name:MrTest age:120 email:tesasdfasft@test.com
 
+K city moorpark
+K name Arnie
+K test testers
+K session:1 data
+L mm t a c a d a b c
+L stuff things cosas potatoes
+L prgl c++ python java c javascript sql
+L mylist a r t e q ee rr tt
+L milist b c s sdd dsd ds dd ww
+H user:100 gg : testes f : t c : v a : b
+H user:230 mm : testes f : t c : v a : b
+H mm test : testes f : t c : v a : b
+
 EXPIRE NEEDS WORK
+
+DUMP is not properly dumping
+LOAD IS NOT LOADING PROPERLY
 
 */

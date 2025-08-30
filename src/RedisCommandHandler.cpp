@@ -360,7 +360,7 @@ static std::string handleHvals(const std::vector<std::string>& tokens, RedisData
 
 static std::string handleHgetall(const std::vector<std::string>& tokens, RedisDatabase& db)
 {
-    if(tokens.size() < 4){
+    if(tokens.size() < 2){
         return "-Error: HGETALL requires key.\r\n";
     } else {
         auto hash = db.Hgetall(tokens[1]);
