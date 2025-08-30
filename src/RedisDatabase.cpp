@@ -512,18 +512,11 @@ std::unordered_map<std::string, std::string> RedisDatabase::Hgetall(const std::s
 bool RedisDatabase::HMset(const std::string &key, const std::vector<std::pair<std::string, std::string>> &fieldValues)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
-    auto it = hash_store.find(key);
-
-    if(it != hash_store.end())
+    for(const auto& pair : fieldValues)
     {
-        for(const auto& pair : fieldValues)
-        {
-            hash_store[key][pair.first] = pair.second;
-        }
-        return true;
+        hash_store[key][pair.first] = pair.second;
     }
-
-    return false;
+    return true;
 }
 
 /*
