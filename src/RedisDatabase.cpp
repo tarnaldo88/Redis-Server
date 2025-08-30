@@ -225,6 +225,8 @@ bool RedisDatabase::rename(const std::string &oldKey, const std::string &newKey)
     return found;                                                                                                                       
 }
 
+//LIST 
+
 ssize_t RedisDatabase::llen(const std::string& key)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
@@ -402,6 +404,8 @@ bool RedisDatabase::rpop(const std::string &key, std::string &value)
     }    
 }
 
+// HASH OPERATIONS
+
 ssize_t RedisDatabase::Hlen(const std::string &key)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
@@ -416,12 +420,6 @@ ssize_t RedisDatabase::Hlen(const std::string &key)
 bool RedisDatabase::Hset(const std::string &key, const std::string &field, const std::string &value)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
-    //COMMENTED CODE only matters if we want key to exist before adding or changing to it
-    // auto it = hash_store.find(key);
-    // if(it != hash_store.end()){
-    //     hash_store[key][field] = value;
-    //     return true;
-    // }
     hash_store[key][field] = value;
     return true;
 }
@@ -432,8 +430,8 @@ bool RedisDatabase::Hget(const std::string &key, const std::string &field, std::
     auto it = hash_store.find(key);
     if(it != hash_store.end()){
         auto secondIt = hash_store[key].find(field);
-        if(secondIt != hash_store[key].end()){
-            value = hash_store[key][field];
+        if(secondIt != it->second.end()){
+            value = secondIt->second;
             return true;
         }        
     } else {
