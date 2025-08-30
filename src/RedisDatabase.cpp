@@ -565,7 +565,6 @@ H mm test : testes f : t c : v a : b
 
 EXPIRE NEEDS WORK
 
-DUMP is not properly dumping
-LOAD IS NOT LOADING PROPERLY
+HMSET DOES NOT TAKE MULTIPLE FIELD VALUE PAIRS
 
 */
