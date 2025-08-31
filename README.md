@@ -52,6 +52,7 @@ Because the server speaks RESP, you can use `redis-cli` to interact with it.
 redis-cli -p 6379 PING
 redis-cli -p 6379 ECHO "hello"
 redis-cli -p 6379 SET user:1 "alice"
+redis-cli -p 6379 GETSET user:1 "alice"
 redis-cli -p 6379 GET user:1
 redis-cli -p 6379 KEYS "*"      # Note: pattern filtering is not implemented; returns all keys
 redis-cli -p 6379 TYPE user:1
