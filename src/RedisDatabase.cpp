@@ -105,6 +105,11 @@ void RedisDatabase::set(const std::string& key, const std::string& value)
     kv_store[key] = value;    
 }
 
+std::string RedisDatabase::getSet(const std::string &key, const std::string &value)
+{
+    return std::string();
+}
+
 bool RedisDatabase::get(const std::string &key, std::string &value)
 {
     std::lock_guard<std::mutex> lock(db_mutex);

@@ -408,6 +408,15 @@ static std::string handleHmset(const std::vector<std::string>& tokens, RedisData
     }
 }
 
+//Additional Commands
+static std::string handleGetSet(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    if(tokens.size() < 3)
+        return "-Error: GETSET requires key and value\r\n";
+    db.set(tokens[1], tokens[2]);
+    return "+OK\r\n";
+}
+
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     //Using RESP parser;
     std::vector<std::string> tokens = parseRespCommand(commandLine);
@@ -464,6 +473,10 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     else if(cmd == "RENAME")
     {
         return handleRename(tokens, db);
+    }
+    else if(cmd == "GETSET")
+    {
+        return handleGetSet(tokens, db);
     }
     // List Operations
     else if(cmd == "LLEN")

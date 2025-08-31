@@ -25,6 +25,7 @@ public:
 
     //Key Value commands
     void set(const std::string& key, const std::string& value);
+    std::string getSet(const std::string& key, const std::string& value);
     bool get(const std::string& key, std::string& value);
     std::vector<std::string> keys();
     std::string type(const std::string& key);
@@ -79,5 +80,4 @@ private:
     std::unordered_map<std::string, std::chrono::steady_clock::time_point> expire_map;
 
 };
-
 #endif
