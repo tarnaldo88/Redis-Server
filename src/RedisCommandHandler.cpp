@@ -415,12 +415,6 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     if(tokens.empty()) {
         return ""; // ignore empty commands
     } 
-    
-    //for debugging
-    // std::cout << commandLine<< "\n";    
-    // for(auto& t : tokens){
-    //     std::cout << t << "\n";
-    // }
 
     std::string cmd = tokens[0];
     std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::toupper);
