@@ -413,8 +413,8 @@ static std::string handleGetSet(const std::vector<std::string>& tokens, RedisDat
 {
     if(tokens.size() < 3)
         return "-Error: GETSET requires key and value\r\n";
-    db.set(tokens[1], tokens[2]);
-    return "+OK\r\n";
+    std::string oldValue = db.getSet(tokens[1], tokens[2]);
+    return oldValue;
 }
 
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
