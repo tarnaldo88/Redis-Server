@@ -59,11 +59,7 @@ public:
     std::unordered_map<std::string, std::string> Hgetall(const std::string& key);
     bool HMset(const std::string& key, const std::vector<std::pair<std::string, std::string>>& fieldValues);
     bool Hsetnx(const std::string& key, const std::string& field, const std::string& value);
-    
-    
-    
-
-
+    bool Hrandfield(const std::string& key, std::string&value, const int& count);
 
 private:
     RedisDatabase() = default;

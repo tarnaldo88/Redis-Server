@@ -570,8 +570,14 @@ bool RedisDatabase::Hsetnx(const std::string &key, const std::string &field, con
     auto it = hash_store.find(key);
     if(it != hash_store.end())
     {
-        return hash_store[key][field] = value;
+        hash_store[key][field] = value;
+        return true;
     }
+    return false;
+}
+
+bool RedisDatabase::Hrandfield(const std::string &key, std::string &value, const int &count)
+{
     return false;
 }
 
