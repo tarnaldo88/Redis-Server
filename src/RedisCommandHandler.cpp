@@ -417,6 +417,14 @@ static std::string handleGetSet(const std::vector<std::string>& tokens, RedisDat
     return oldValue;
 }
 
+static std::string handleHsetnx(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    if(tokens.size() < 4)
+        return "-Error: HSETNX requires key, field, and value\r\n";
+    bool result = db.Hsetnx(tokens[1], tokens[2], tokens[3]);
+    return ":" + std::to_string(result ? 1 : 0) + "\r\n";
+}
+
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     //Using RESP parser;
     std::vector<std::string> tokens = parseRespCommand(commandLine);
@@ -551,7 +559,11 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     else if( cmd == "HKEYS") 
     {
         return handleHkeys(tokens, db);
-    }    
+    }
+    else if(cmd == "HSETNX")    
+    {
+        return handleHsetnx(tokens, db);
+    }
     else
     {
         return "-ERR unknown command '" + tokens[0] + "'\r\n";
