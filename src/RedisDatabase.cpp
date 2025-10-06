@@ -563,6 +563,18 @@ bool RedisDatabase::HMset(const std::string &key, const std::vector<std::pair<st
     return true;
 }
 
+bool RedisDatabase::Hsetnx(const std::string &key, const std::string &field, const std::string &value)
+{
+    std::lock_guard<std::mutex> lock(db_mutex);
+    purgeExpired();
+    auto it = hash_store.find(key);
+    if(it != hash_store.end())
+    {
+        return hash_store[key][field] = value;
+    }
+    return false;
+}
+
 /*
 Key-Value (K)
 kv_store["name"] = "Alice";
