@@ -576,41 +576,43 @@ bool RedisDatabase::Hsetnx(const std::string &key, const std::string &field, con
     return false;
 }
 
-bool RedisDatabase::Hrandfield(const std::string &key, std::string &value, const int &count)
+bool RedisDatabase::Hrandfield(const std::string &key, std::vector<std::string> &value, const int &count)
 {
-    if(count == 0)
+    std::lock_guard<std::mutex> lock(db_mutex);
+    purgeExpired();
+
+    emplace_rand_fields(key, value, count);
+    
+    return true;
+}
+
+void emplace_rand_fields(const std::string &key, std::vector<std::string> &value, const int &count)
+{
+    // Create a random device to seed the generator
+    std::random_device rd;
+
+    // Create a Mersenne Twister generator (fast and high-quality)
+    std::mt19937 gen(rd());
+
+    // Define the range [min, max]
+    int min = 0;
+    int max = hash_store[key].size();
+
+    // Create a uniform distribution
+    std::uniform_int_distribution<> dist(min, max);
+
+    // Generate random number
+    int random_number = dist(gen);
+
+    //iterate through hash random number of times
+    for(const auto& p : hash_store[key])
     {
-        // Create a random device to seed the generator
-        std::random_device rd;
-
-        // Create a Mersenne Twister generator (fast and high-quality)
-        std::mt19937 gen(rd());
-
-        // Define the range [min, max]
-        int min = 0;
-        int max = hash_store[key].size();
-
-        // Create a uniform distribution
-        std::uniform_int_distribution<> dist(min, max);
-
-        // Generate random number
-        int random_number = dist(gen);
-
-        //iterate through hash random number of times
-        for(const auto& p : hash_store[key])
+        if(random_number == 0)
         {
-            if(random_number == 0)
-            {
-                value = p.second;
-            }
-            --random_number;
-        }        
-    }
-    else
-    {
-        
-    }
-    return false;
+            value.emplace_back(p.second);
+        }
+        --random_number;
+    }     
 }
 
 /*
