@@ -425,6 +425,27 @@ static std::string handleHsetnx(const std::vector<std::string>& tokens, RedisDat
     return ":" + std::to_string(result ? 1 : 0) + "\r\n";
 }
 
+static std::string handleHrandfield(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    //check if count is provided
+    if(tokens.size() < 3)
+        return "-Error: HRANDFIELD requires key and count\r\n";
+    
+    std::vector<std::string> values;
+    db.Hrandfield(tokens[1], values, std::stoi(tokens[2]));
+    
+    std::ostringstream response;
+
+        response << "*" << values.size() << "\r\n";
+        int i = 1;
+
+        for(const auto& key : values){
+            response << "$" << key.size() << "\r\n" << i << ")" <<key << "\r\n";
+            i++;
+        }
+        return response.str();
+}
+
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     //Using RESP parser;
     std::vector<std::string> tokens = parseRespCommand(commandLine);
@@ -563,6 +584,10 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     else if(cmd == "HSETNX")    
     {
         return handleHsetnx(tokens, db);
+    }
+    else if(cmd == "HRANDFIELD")
+    {
+        return handleHrandfield(tokens, db);
     }
     else
     {
