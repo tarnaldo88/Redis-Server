@@ -596,23 +596,20 @@ void emplace_rand_fields(const std::string &key, std::vector<std::string> &value
 
     // Define the range [min, max]
     int min = 0;
-    int max = hash_store[key].size();
+    int max = hash_store[key].size() - 1;
 
     // Create a uniform distribution
     std::uniform_int_distribution<> dist(min, max);
 
-    // Generate random number
-    int random_number = dist(gen);
+    for (int i = 0; i < count; ++i) {
+        int random_index = dist(gen);
 
-    //iterate through hash random number of times
-    for(const auto& p : hash_store[key])
-    {
-        if(random_number == 0)
-        {
-            value.emplace_back(p.second);
-        }
-        --random_number;
-    }     
+        // advance iterator to random index
+        auto it = mymap.begin();
+        std::advance(it, random_index);
+
+        value.emplace_back(it->second);
+    }   
 }
 
 /*
