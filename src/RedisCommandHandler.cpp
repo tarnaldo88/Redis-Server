@@ -446,6 +446,27 @@ static std::string handleHrandfield(const std::vector<std::string>& tokens, Redi
         return response.str();
 }
 
+static std::string handleHscan(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    if(tokens.size() < 3)
+        return "-Error: HSCAN requires key and cursor\r\n";
+    
+    int cursor = std::stoi(tokens[2]);
+    std::vector<std::string> values;
+    db.Hscan(tokens[1], cursor);
+    
+    std::ostringstream response;
+
+    response << "*" << values.size() << "\r\n";
+    int i = 1;
+
+    for(const auto& key : values){
+        response << "$" << key.size() << "\r\n" << i << ")" <<key << "\r\n";
+        i++;
+    }
+    return response.str();
+}
+
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     //Using RESP parser;
     std::vector<std::string> tokens = parseRespCommand(commandLine);
@@ -588,6 +609,10 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     else if(cmd == "HRANDFIELD")
     {
         return handleHrandfield(tokens, db);
+    }
+    else if(cmd == "HSCAN")
+    {
+        return handleHscan(tokens, db);
     }
     else
     {
