@@ -614,6 +614,10 @@ void emplace_rand_fields(const std::string &key, std::vector<std::string> &value
 
 bool RedisDatabase::Hscan(const std::string &key, const int &cursor, std::vector<std::string> &values)
 {
+    //     Array reply: a two-element array.
+    // The first element is a Bulk string reply that represents an unsigned 64-bit number, the cursor.
+    // The second element is an Array reply of field/value pairs that were scanned. When the NOVALUES flag (since Redis 7.4) is used, only the field names are returned.
+    
     std::lock_guard<std::mutex> lock(db_mutex);
     purgeExpired();
     
