@@ -612,6 +612,13 @@ void emplace_rand_fields(const std::string &key, std::vector<std::string> &value
     }   
 }
 
+bool RedisDatabase::Hscan(const std::string &key, const int &cursor)
+{
+    std::lock_guard<std::mutex> lock(db_mutex);
+    purgeExpired();
+    
+}
+
 /*
 Key-Value (K)
 kv_store["name"] = "Alice";

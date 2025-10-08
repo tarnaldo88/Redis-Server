@@ -81,6 +81,7 @@ redis-cli -p 6379 HVALS user:1
 redis-cli -p 6379 HGETALL user:1
 redis-cli -p 6379 HMSET user:1 name alice city paris
 redis-cli -p 6379 HSETNX user:1 name alice
+redis-cli -p 6379 HRANDFIELD user:1 2
 ```
 
 ## Supported commands
@@ -120,6 +121,8 @@ Hashes:
 - `HGETALL <key>`
 - `HMSET <key> <f1> <v1> [f2 v2 ...]`
 - `HSETNX <key> <field> <value>`
+- `HRANDFIELD <key> <count>`
+- `HSCAN <key> <cursor>`
 
 ## Protocol notes
 - Primary input is RESP Arrays and Bulk Strings.
@@ -240,3 +243,9 @@ HGETALL key → field/value pairs
 HMSET key f1 v1 [f2 v2 ...]
 ### HSETNX: 
 HSETNX key field value
+### HRANDFIELD: 
+HRANDFIELD key count -> random fields
+### HSCAN: 
+HSCAN key cursor -> scan hash
+
+
