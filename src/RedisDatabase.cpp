@@ -612,11 +612,12 @@ void emplace_rand_fields(const std::string &key, std::vector<std::string> &value
     }   
 }
 
-bool RedisDatabase::Hscan(const std::string &key, const int &cursor)
+bool RedisDatabase::Hscan(const std::string &key, const int &cursor, std::vector<std::string> &values)
 {
     std::lock_guard<std::mutex> lock(db_mutex);
     purgeExpired();
     
+    return true;
 }
 
 /*

@@ -453,7 +453,7 @@ static std::string handleHscan(const std::vector<std::string>& tokens, RedisData
     
     int cursor = std::stoi(tokens[2]);
     std::vector<std::string> values;
-    db.Hscan(tokens[1], cursor);
+    db.Hscan(tokens[1], cursor, values);
     
     std::ostringstream response;
 
