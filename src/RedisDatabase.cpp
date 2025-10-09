@@ -586,7 +586,7 @@ bool RedisDatabase::Hrandfield(const std::string &key, std::vector<std::string> 
     return true;
 }
 
-void emplace_rand_fields(const std::string &key, std::vector<std::string> &value, const int &count)
+void RedisDatabase::emplace_rand_fields(const std::string &key, std::vector<std::string> &value, const int &count)
 {
     // Create a random device to seed the generator
     std::random_device rd;
@@ -605,7 +605,7 @@ void emplace_rand_fields(const std::string &key, std::vector<std::string> &value
         int random_index = dist(gen);
 
         // advance iterator to random index
-        auto it = mymap.begin();
+        auto it = hash_store[key].begin();
         std::advance(it, random_index);
 
         value.emplace_back(it->second);

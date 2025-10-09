@@ -70,6 +70,7 @@ private:
     RedisDatabase& operator=(const RedisDatabase&) = delete;
 
     void purgeExpired();
+    void emplace_rand_fields(const std::string &key, std::vector<std::string> &value, const int &count);
 
     std::mutex db_mutex;
     std::unordered_map<std::string, std::string> kv_store;
