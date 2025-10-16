@@ -626,8 +626,46 @@ bool RedisDatabase::Hscan(const std::string &key, const int &cursor, std::vector
 
 int RedisDatabase::linsert(const std::string& key, const std::string& value, const std::string& pivot)
 {
+    // Integer reply: the list length after a successful insert operation.
+    // Integer reply: 0 when the key doesn't exist.
+    // Integer reply: -1 when the pivot wasn't found.
     std::lock_guard<std::mutex> lock(db_mutex);
     purgeExpired();
+
+    auto it = list_store.find(key);
+    if(it == list_store.end())
+    {
+        return 0;
+    }
+    if(pivot == "before")
+    {
+        if(it != list_store.end())
+        {
+            it->second.insert(it->second.begin(), value);
+            return it->second.size();
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else if(pivot == "after")
+    {        
+        if(it != list_store.end())
+        {
+            it->second.insert(it->second.end(), value);
+            return it->second.size();
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else
+    {
+        //pivot not found
+        return -1;
+    }    
     
     return 0;
 }
