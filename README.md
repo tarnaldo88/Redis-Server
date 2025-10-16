@@ -69,6 +69,7 @@ redis-cli -p 6379 LSET mylist 1 x
 redis-cli -p 6379 LREM mylist 1 x
 redis-cli -p 6379 LPOP mylist
 redis-cli -p 6379 RPOP mylist
+redis-cli -p 6379 LINSERT mylist before x y
 
 # Hashes
 redis-cli -p 6379 HSET user:1 name alice
@@ -109,6 +110,7 @@ Lists:
 - `LPUSH <key> v1 [v2 ...]`
 - `RPUSH <key> v1 [v2 ...]`
 - `LPOP <key>` / `RPOP <key>`
+- `LINSERT <key> <before|after> <pivot> <value>`
 
 Hashes:
 - `HSET <key> <field> <value>`
@@ -220,7 +222,8 @@ LREM key count value → remove occurrences
 LINDEX key index → get element
 ### LSET: 
 LSET key index value → set element
-
+### LINSERT: 
+LINSERT key before|after pivot value → insert before or after pivot
 
 ## Hashes
 ### HSET: 
