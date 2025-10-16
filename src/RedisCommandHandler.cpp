@@ -467,6 +467,14 @@ static std::string handleHscan(const std::vector<std::string>& tokens, RedisData
     return response.str();
 }
 
+static std::string handleLinsert(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    if(tokens.size() < 4)
+        return "-Error: LINSERT requires key, pivot, and value\r\n";
+    int result = db.linsert(tokens[1], tokens[2], tokens[3]);
+    return ":" + std::to_string(result) + "\r\n";
+}
+
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     //Using RESP parser;
     std::vector<std::string> tokens = parseRespCommand(commandLine);
@@ -613,6 +621,10 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     else if(cmd == "HSCAN")
     {
         return handleHscan(tokens, db);
+    }
+    else if(cmd == "LINSERT")
+    {
+        return handleLinsert(tokens, db);
     }
     else
     {
