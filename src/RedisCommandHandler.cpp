@@ -479,7 +479,7 @@ static std::string handleLtrim(const std::vector<std::string>& tokens, RedisData
 {
     if(tokens.size() < 4)
         return "-Error: LTRIM requires key, start, and stop\r\n";
-    bool result = db.ltrim(tokens[1], std::stoi(tokens[2]), std::stoi(tokens[3]));
+    db.ltrim(tokens[1], std::stoi(tokens[2]), std::stoi(tokens[3]));
     return ":OK\r\n";
 }
 
