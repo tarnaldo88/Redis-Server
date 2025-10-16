@@ -624,6 +624,14 @@ bool RedisDatabase::Hscan(const std::string &key, const int &cursor, std::vector
     return true;
 }
 
+int RedisDatabase::linsert(const std::string& key, const std::string& value, const std::string& pivot)
+{
+    std::lock_guard<std::mutex> lock(db_mutex);
+    purgeExpired();
+    
+    return 0;
+}
+
 /*
 Key-Value (K)
 kv_store["name"] = "Alice";
