@@ -475,6 +475,15 @@ static std::string handleLinsert(const std::vector<std::string>& tokens, RedisDa
     return ":" + std::to_string(result) + "\r\n";
 }
 
+static std::string handleLtrim(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    if(tokens.size() < 4)
+        return "-Error: LTRIM requires key, start, and stop\r\n";
+    bool result = db.ltrim(tokens[1], std::stoi(tokens[2]), std::stoi(tokens[3]));
+    return ":OK\r\n";
+}
+
+
 std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     //Using RESP parser;
     std::vector<std::string> tokens = parseRespCommand(commandLine);
@@ -625,6 +634,10 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     else if(cmd == "LINSERT")
     {
         return handleLinsert(tokens, db);
+    }
+    else if(cmd == "LTRIM")
+    {
+        return handleLtrim(tokens, db);
     }
     else
     {
