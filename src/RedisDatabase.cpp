@@ -670,6 +670,19 @@ int RedisDatabase::linsert(const std::string& key, const std::string& value, con
     return 0;
 }
 
+bool RedisDatabase::ltrim(const std::string& key, const int& start, const int& stop)
+{
+    std::lock_guard<std::mutex> lock(db_mutex);
+    purgeExpired();
+    auto it = list_store.find(key);
+    if(it == list_store.end())
+    {
+        return false;
+    }
+    it->second.erase(it->second.begin() + start, it->second.begin() + stop);
+    return true;
+}
+
 /*
 Key-Value (K)
 kv_store["name"] = "Alice";
