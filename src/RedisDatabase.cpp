@@ -266,6 +266,14 @@ int RedisDatabase::copy(const std::string &oldKey, const std::string &newKey)
     }    
 }
 
+size_t RedisDatabase::dbsize()
+{
+    std::lock_guard<std::mutex> lock(db_mutex);
+    purgeExpired();
+    
+    return kv_store.size();
+}
+
 //LIST 
 
 ssize_t RedisDatabase::llen(const std::string& key)

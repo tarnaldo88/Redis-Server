@@ -36,6 +36,7 @@ public:
     //rename
     bool rename(const std::string& oldKey, const std::string& newKey);
     int copy(const std::string& oldKey, const std::string& newKey);
+    size_t dbsize();
 
     //List Operations
     ssize_t llen(const std::string& key);
