@@ -163,7 +163,12 @@ static std::string handleRename(const std::vector<std::string>& tokens, RedisDat
 
 static std::string handleCopy(const std::vector<std::string>& tokens, RedisDatabase& db)
 {
-    
+    if(tokens.size() < 3)
+    {
+        return "-Error: COPY requires key to be copied, and name of new key\r\n";
+    }
+    int response = db.copy(tokens[1], tokens[2]);
+    return response == 1 ?  "+OK\r\n" : "-Error: Copy Key already exists.\r\n";
 }
 
 //LIST HANDLERS
