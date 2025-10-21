@@ -255,9 +255,15 @@ int RedisDatabase::copy(const std::string &oldKey, const std::string &newKey)
     std::lock_guard<std::mutex> lock(db_mutex);
     purgeExpired();
     
-    kv_store[newKey] = kv_store[oldKey];
-    return (kv_store[newKey] == kv_store[oldKey]) ? 1 : 0;
-    
+    if (kv_store.find(newKey) != kv_store.end())
+    {
+        kv_store[newKey] = kv_store[oldKey];
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }    
 }
 
 //LIST 
