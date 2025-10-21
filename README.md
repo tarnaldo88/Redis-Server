@@ -102,6 +102,7 @@ Strings (key/value):
 - `EXPIRE <key> <seconds>`
 - `RENAME <old> <new>`
 - `COPY <old> <new>`
+- `DBSIZE`
 
 Lists:
 - `LLEN <key>`
@@ -211,6 +212,9 @@ Use case: When restructuring keys during a migration or data reorganization, use
 
 ### COPY
 Use case: When copying a key to a new key, use COPY to copy the key’s value to a new key.
+
+### DBSIZE
+Use case: When you need to know the number of keys in the database, use DBSIZE to get the count.
 
 ## Lists
 ### LGET: 

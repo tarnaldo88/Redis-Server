@@ -661,6 +661,10 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     {
         return handleCopy(tokens, db);
     }
+    else if(cmd == "DBSIZE")
+    {
+        return handleDbsize(tokens, db);
+    }
     else
     {
         return "-ERR unknown command '" + tokens[0] + "'\r\n";
