@@ -161,6 +161,13 @@ static std::string handleRename(const std::vector<std::string>& tokens, RedisDat
     return "-Error: Key not found or rename failed\r\n";
 }
 
+static std::string handleCopy(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    
+}
+
+//LIST HANDLERS
+
 static std::string handleLlen(const std::vector<std::string>& tokens, RedisDatabase& db) {
     if(tokens.size() < 2){
         return "-ERR LLEN requires a key.\r\n";
@@ -638,6 +645,10 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     else if(cmd == "LTRIM")
     {
         return handleLtrim(tokens, db);
+    }
+    else if(cmd == "COPY")
+    {
+        return handleCopy(tokens, db);
     }
     else
     {
