@@ -35,6 +35,7 @@ public:
     bool expire(const std::string& key, int seconds);
     //rename
     bool rename(const std::string& oldKey, const std::string& newKey);
+    int copy(const std::string& oldKey, const std::string& newKey);
 
     //List Operations
     ssize_t llen(const std::string& key);

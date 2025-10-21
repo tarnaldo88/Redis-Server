@@ -250,6 +250,13 @@ bool RedisDatabase::rename(const std::string &oldKey, const std::string &newKey)
     return found;                                                                                                                       
 }
 
+int RedisDatabase::copy(const std::string &oldKey, const std::string &newKey)
+{
+    std::lock_guard<std::mutex> lock(db_mutex);
+    purgeExpired();
+    
+}
+
 //LIST 
 
 ssize_t RedisDatabase::llen(const std::string& key)
