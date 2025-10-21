@@ -59,6 +59,7 @@ redis-cli -p 6379 TYPE user:1
 redis-cli -p 6379 DEL user:1     # Single key
 redis-cli -p 6379 EXPIRE user:1 60
 redis-cli -p 6379 RENAME old new
+redis-cli -p 6379 COPY old new
 
 # Lists
 redis-cli -p 6379 LPUSH mylist a b c
@@ -100,6 +101,7 @@ Strings (key/value):
 - `DEL <key>` / `UNLINK <key>`
 - `EXPIRE <key> <seconds>`
 - `RENAME <old> <new>`
+- `COPY <old> <new>`
 
 Lists:
 - `LLEN <key>`
@@ -206,6 +208,9 @@ Use case: Set a timeout on keys for caching. For example, cache product details 
 
 ### RENAME
 Use case: When restructuring keys during a migration or data reorganization, use RENAME to change the key’s name without losing its data.
+
+### COPY
+Use case: When copying a key to a new key, use COPY to copy the key’s value to a new key.
 
 ## Lists
 ### LGET: 
