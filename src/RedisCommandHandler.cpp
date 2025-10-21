@@ -171,6 +171,12 @@ static std::string handleCopy(const std::vector<std::string>& tokens, RedisDatab
     return response == 1 ?  "+OK\r\n" : "-Error: Copy Key already exists.\r\n";
 }
 
+static std::string handleDbsize(const std::vector<std::string>& tokens, RedisDatabase& db)
+{    
+    int response = db.dbsize();
+    return ":" + std::to_string(response) + "\r\n";
+}
+
 //LIST HANDLERS
 
 static std::string handleLlen(const std::vector<std::string>& tokens, RedisDatabase& db) {
