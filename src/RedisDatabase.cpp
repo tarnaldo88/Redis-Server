@@ -661,6 +661,7 @@ std::vector<std::string> RedisDatabase::Hgetdel(const std::string &key, const st
         {
             result.emplace_back(hash_store[key][field]);
             hash_store[key].erase(field);
+            expire_map.erase(key);
             
             if(hash_store[key].empty())
             {

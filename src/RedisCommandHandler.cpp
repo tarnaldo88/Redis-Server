@@ -485,6 +485,25 @@ static std::string handleHscan(const std::vector<std::string>& tokens, RedisData
     return response.str();
 }
 
+static std::string handleHgetdel(const std::vector<std::string>& tokens, RedisDatabase& db)
+{
+    if(tokens.size() < 4)
+        return "-Error: HGETDEL requires key, field, and count\r\n";
+    std::vector<std::string> values;
+    db.Hgetdel(tokens[1], tokens[2], std::stoi(tokens[3]), values);
+    
+    std::ostringstream response;
+
+    response << "*" << values.size() << "\r\n";
+    int i = 1;
+
+    for(const auto& key : values){
+        response << "$" << key.size() << "\r\n" << i << ")" <<key << "\r\n";
+        i++;
+    }
+    return response.str();
+}
+
 static std::string handleLinsert(const std::vector<std::string>& tokens, RedisDatabase& db)
 {
     if(tokens.size() < 4)
@@ -664,6 +683,10 @@ std::string RedisCommandHandler::processCommand(const std::string& commandLine){
     else if(cmd == "DBSIZE")
     {
         return handleDbsize(tokens, db);
+    }
+    else if(cmd == "HGETDEL")
+    {
+        return handleHgetdel(tokens, db);
     }
     else
     {
