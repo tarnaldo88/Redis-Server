@@ -60,6 +60,7 @@ redis-cli -p 6379 DEL user:1     # Single key
 redis-cli -p 6379 EXPIRE user:1 60
 redis-cli -p 6379 RENAME old new
 redis-cli -p 6379 COPY old new
+redis-cli -p 6379 DBSIZE
 
 # Lists
 redis-cli -p 6379 LPUSH mylist a b c
