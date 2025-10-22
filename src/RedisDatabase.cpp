@@ -648,6 +648,14 @@ bool RedisDatabase::Hscan(const std::string &key, const int &cursor, std::vector
     return true;
 }
 
+std::vector<std::string> RedisDatabase::Hgetdel(const std::string &key, const std::string &field, const int &count, const std::vector<std::string> &fields)
+{
+    std::lock_guard<std::mutex> lock(db_mutex);
+    purgeExpired();
+    
+    return {};
+}
+
 int RedisDatabase::linsert(const std::string& key, const std::string& value, const std::string& pivot)
 {
     // Integer reply: the list length after a successful insert operation.

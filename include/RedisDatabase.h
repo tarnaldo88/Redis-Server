@@ -66,6 +66,7 @@ public:
     bool Hsetnx(const std::string& key, const std::string& field, const std::string& value);
     bool Hrandfield(const std::string& key, std::vector<std::string>& value, const int& count);
     bool Hscan(const std::string& key, const int& cursor, std::vector<std::string>& values);
+    std::vector<std::string> Hgetdel (const std::string& key, const std::string& field, const int& count, const std::vector<std::string>& fields);
 
 private:
     RedisDatabase() = default;
