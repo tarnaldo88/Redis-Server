@@ -488,7 +488,10 @@ static std::string handleHscan(const std::vector<std::string>& tokens, RedisData
 static std::string handleHgetdel(const std::vector<std::string>& tokens, RedisDatabase& db)
 {
     if(tokens.size() < 4)
-        return "-Error: HGETDEL requires key, field, and count\r\n";
+    {
+        return "-Error: HGETDEL requires key, Field, count, and fields\r\n";
+    }        
+
     std::vector<std::string> values;
     db.Hgetdel(tokens[1], tokens[2], std::stoi(tokens[3]), values);
     
@@ -497,7 +500,7 @@ static std::string handleHgetdel(const std::vector<std::string>& tokens, RedisDa
     response << "*" << values.size() << "\r\n";
     int i = 1;
 
-    for(const auto& key : values){
+    for(const auto& key : values) {
         response << "$" << key.size() << "\r\n" << i << ")" <<key << "\r\n";
         i++;
     }
