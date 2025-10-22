@@ -652,8 +652,28 @@ std::vector<std::string> RedisDatabase::Hgetdel(const std::string &key, const st
 {
     std::lock_guard<std::mutex> lock(db_mutex);
     purgeExpired();
+
+    std::vector<std::string> result;
+
+    for(const auto& key : fields)
+    {
+        if(hash_store[key].find(field) != hash_store[key].end())
+        {
+            result.emplace_back(hash_store[key][field]);
+            hash_store[key].erase(field);
+            
+            if(hash_store[key].empty())
+            {
+                hash_store.erase(key);
+            }
+        }
+        else
+        {
+            result.emplace_back("nil");
+        }
+    }
     
-    return {};
+    return result;
 }
 
 int RedisDatabase::linsert(const std::string& key, const std::string& value, const std::string& pivot)
